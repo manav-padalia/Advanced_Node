@@ -24,7 +24,7 @@ describe('ecommerce shared', () => {
     delete process.env.JWT_ACCESS_SECRET;
     process.env.JWT_REFRESH_SECRET = 'y'.repeat(32);
     process.env.DATABASE_URL =
-      'postgresql://ztlab87:13579acEG@localhost:5432/ecommerce?schema=public';
+      'postgresql://ztlab87:13579acEG@localhost:5432/ecommerce_dev?schema=public';
     expect(() => validateEnv()).toThrow(/Environment validation failed/);
     process.env.JWT_ACCESS_SECRET = prev;
   });

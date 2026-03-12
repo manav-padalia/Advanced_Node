@@ -41,7 +41,7 @@ export class RabbitMQClient {
       // Consume RPC responses
       await this.channel.consume(
         this.replyQueue,
-        (msg) => {
+        (msg: ConsumeMessage | null) => {
           if (msg) {
             this.handleRPCResponse(msg);
           }
@@ -52,7 +52,7 @@ export class RabbitMQClient {
       logger.info('Connected to RabbitMQ');
 
       // Handle connection errors
-      this.connection.on('error', (err) => {
+      this.connection.on('error', (err: Error) => {
         logger.error('RabbitMQ connection error:', err);
       });
 
@@ -162,7 +162,7 @@ export class RabbitMQClient {
 
     await this.channel.consume(
       queue,
-      async (msg) => {
+      async (msg: ConsumeMessage | null) => {
         if (msg) {
           try {
             const content = JSON.parse(msg.content.toString());
@@ -220,7 +220,7 @@ export class RabbitMQClient {
 
     await this.assertQueue(queue);
 
-    await this.channel.consume(queue, async (msg) => {
+    await this.channel.consume(queue, async (msg: ConsumeMessage | null) => {
       if (msg) {
         try {
           const content = JSON.parse(msg.content.toString());

@@ -44,7 +44,7 @@ export class InventoryService {
   }
 
   async reserveStock(items: Array<{ productId: string; quantity: number }>) {
-    const results = [];
+    const results: Array<{ productId: string; quantity: number }> = [];
 
     for (const item of items) {
       const result = await inventoryRepository.reserveStock(

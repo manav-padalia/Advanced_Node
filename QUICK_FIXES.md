@@ -187,7 +187,7 @@ docker build -t ecommerce-backend:latest .
 
 # Run the container locally
 docker run -p 3000:3000 \
-  -e DATABASE_URL="postgresql://user:password@localhost:5432/ecommerce" \
+  -e DATABASE_URL="postgresql://user:password@localhost:5432/ecommerce_dev" \
   -e REDIS_HOST="localhost" \
   -e REDIS_PORT="6379" \
   -e JWT_ACCESS_SECRET="your-secret-key-min-32-characters-long" \

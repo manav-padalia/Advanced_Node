@@ -1,12 +1,11 @@
 import { Queue } from 'bullmq';
-import Redis from 'ioredis';
 
-const connection = new Redis({
+const connection = {
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379', 10),
   password: process.env.REDIS_PASSWORD,
   maxRetriesPerRequest: null,
-});
+};
 
 const orderQueue = new Queue('orders', { connection });
 

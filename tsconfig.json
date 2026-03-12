@@ -14,6 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
+    "noImplicitAny": false,
     "baseUrl": "./src",
     "paths": {
       "@ecommerce/shared": ["shared/index.ts"],
@@ -22,6 +23,6 @@
       "@services/*": ["services/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/types/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

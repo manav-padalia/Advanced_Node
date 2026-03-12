@@ -112,9 +112,13 @@ export { Server as HTTPServer } from 'http';
 // NODE.JS BUILT-INS
 // ============================================================================
 
-export * as path from 'path';
+import * as pathModule from 'path';
+import * as streamModule from 'stream';
+import * as eventsModule from 'events';
+
+export { pathModule as path };
+export { streamModule as stream };
+export { eventsModule as events };
 export * as fs from 'fs';
-export * as stream from 'stream';
-export * as events from 'events';
 export * as util from 'util';
 export * as querystring from 'querystring';
