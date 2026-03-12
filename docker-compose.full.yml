@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  api-gateway:
+    build: .
+    environment:
+      API_GATEWAY_PORT: 3000
+      HOST: 0.0.0.0
+      CONSUL_HTTP_ADDR: http://consul:8500
+      SERVICE_ADVERTISE_HOST: api-gateway
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce?schema=public
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      ENABLE_BULL_BOARD: ${ENABLE_BULL_BOARD:-true}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+      - consul
+
+  consul:
+    image: hashicorp/consul:1.17
+    command: agent -dev -client=0.0.0.0 -ui
+    ports:
+      - "8500:8500"
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
