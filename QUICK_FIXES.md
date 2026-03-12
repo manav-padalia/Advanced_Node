@@ -156,6 +156,12 @@ git push
 
 ## 3. Deploy to Railway (15 minutes)
 
+### Prerequisites
+
+- GitHub account with repository pushed
+- Railway account (https://railway.app)
+- Environment variables ready
+
 ### Step 1: Create `railway.json`
 
 ```json
@@ -171,26 +177,184 @@ git push
 }
 ```
 
-### Step 2: Push to GitHub
+### Step 2: Test Locally Before Deployment
+
+Verify the Docker build works locally:
+
+```bash
+# Build the Docker image
+docker build -t ecommerce-backend:latest .
+
+# Run the container locally
+docker run -p 3000:3000 \
+  -e DATABASE_URL="postgresql://user:password@localhost:5432/ecommerce" \
+  -e REDIS_HOST="localhost" \
+  -e REDIS_PORT="6379" \
+  -e JWT_ACCESS_SECRET="your-secret-key-min-32-characters-long" \
+  -e JWT_REFRESH_SECRET="your-secret-key-min-32-characters-long" \
+  ecommerce-backend:latest
+
+# Test the API
+curl http://localhost:3000/health
+```
+
+### Step 3: Verify Build Output
+
+```bash
+# Check if dist folder is created
+ls -la dist/services/api-gateway/server.js
+
+# Verify TypeScript compilation
+npm run build
+```
+
+### Step 4: Push to GitHub
 
 ```bash
 git add railway.json
 git commit -m "Add Railway deployment config"
-git push
+git push origin main
 ```
 
-### Step 3: Deploy
+### Step 5: Deploy on Railway
 
-1. Go to https://railway.app
-2. Click "New Project"
-3. Select "Deploy from GitHub"
-4. Connect your repository
-5. Add environment variables:
-   - `DATABASE_URL`: Your PostgreSQL URL
-   - `REDIS_HOST`: Your Redis host
-   - `JWT_ACCESS_SECRET`: Your secret
-   - `JWT_REFRESH_SECRET`: Your secret
-6. Deploy!
+1. Go to https://railway.app and sign in
+2. Click "New Project" → "Deploy from GitHub"
+3. Select your repository
+4. Railway will auto-detect the Dockerfile
+5. Add environment variables in Railway dashboard:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `REDIS_HOST`: Redis host (or Railway Redis service)
+   - `REDIS_PORT`: Redis port (default: 6379)
+   - `JWT_ACCESS_SECRET`: Min 32 characters
+   - `JWT_REFRESH_SECRET`: Min 32 characters
+   - `NODE_ENV`: production
+   - `LOG_LEVEL`: info
+
+### Step 6: Configure Railway Services
+
+**Option A: Use Railway's Built-in Services**
+
+1. In Railway dashboard, click "Add Service"
+2. Add PostgreSQL plugin
+3. Add Redis plugin
+4. Railway auto-populates `DATABASE_URL` and Redis credentials
+
+**Option B: Use External Services**
+
+1. Get connection strings from your providers
+2. Manually add to environment variables
+
+### Step 7: Test Deployment
+
+After deployment completes:
+
+```bash
+# Get your Railway app URL from dashboard
+RAILWAY_URL="https://your-app.railway.app"
+
+# Test health endpoint
+curl $RAILWAY_URL/health
+
+# Test API endpoints
+curl $RAILWAY_URL/v1/products
+curl $RAILWAY_URL/v1/orders
+```
+
+### Step 8: Monitor Deployment
+
+In Railway dashboard:
+
+- **Logs**: View real-time application logs
+- **Metrics**: Monitor CPU, memory, network usage
+- **Deployments**: Track deployment history
+- **Alerts**: Set up notifications for failures
+
+### Testing Checklist Before Production
+
+- [ ] Local Docker build succeeds
+- [ ] Local container runs without errors
+- [ ] API health endpoint responds
+- [ ] Database migrations run successfully
+- [ ] Redis connection established
+- [ ] JWT tokens generate correctly
+- [ ] All microservices start (gateway, products, orders, inventory, notifications)
+
+### Troubleshooting
+
+**Build fails:**
+
+```bash
+# Check Docker build locally
+docker build -t test:latest .
+# Review error messages and fix TypeScript issues
+npm run build
+```
+
+**Container won't start:**
+
+```bash
+# Check logs in Railway dashboard
+# Verify all environment variables are set
+# Ensure DATABASE_URL format is correct
+```
+
+**API returns 502 Bad Gateway:**
+
+```bash
+# Check if all services are running
+# Verify Redis and PostgreSQL connections
+# Check application logs in Railway
+```
+
+**Slow deployment:**
+
+- First deployment takes longer (builds Docker image)
+- Subsequent deployments are faster (uses cache)
+- Monitor build progress in Railway dashboard
+
+### Rollback Strategy
+
+If deployment fails:
+
+1. Go to Railway dashboard
+2. Click "Deployments" tab
+3. Select previous working deployment
+4. Click "Redeploy"
+
+### Environment Variables Reference
+
+| Variable             | Required | Example                               |
+| -------------------- | -------- | ------------------------------------- |
+| `DATABASE_URL`       | Yes      | `postgresql://user:pass@host:5432/db` |
+| `REDIS_HOST`         | Yes      | `redis-host.railway.app`              |
+| `REDIS_PORT`         | Yes      | `6379`                                |
+| `JWT_ACCESS_SECRET`  | Yes      | `min-32-character-secret-key-here`    |
+| `JWT_REFRESH_SECRET` | Yes      | `min-32-character-secret-key-here`    |
+| `NODE_ENV`           | Yes      | `production`                          |
+| `LOG_LEVEL`          | No       | `info`                                |
+| `SENTRY_DSN`         | No       | `https://key@sentry.io/project`       |
+
+### Post-Deployment Verification
+
+```bash
+# Monitor logs
+railway logs
+
+# Check service health
+railway status
+
+# View environment variables (masked)
+railway env
+```
+
+### Notes
+
+- Railway auto-scales based on traffic
+- Deployments are atomic (no downtime)
+- Automatic SSL/TLS certificates included
+- Custom domain support available
+- GitHub integration enables auto-deploy on push
 
 ---
 
