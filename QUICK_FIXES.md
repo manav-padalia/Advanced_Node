@@ -1,29 +1,53 @@
 # Quick Fixes - Copy & Paste Solutions
 
-## 1. Add Redis Commander (5 minutes)
+## 1. Add Redis Commander (2 minutes)
 
-### Step 1: Install
+### What is Redis Commander?
 
-```bash
-npm install --save-dev redis-commander
-```
+Redis Commander is a web-based GUI for managing and monitoring Redis instances. It's already configured in `docker-compose.yml` and runs automatically with your other services.
 
-### Step 2: Update package.json
-
-```json
-{
-  "scripts": {
-    "redis:commander": "redis-commander --port 8081"
-  }
-}
-```
-
-### Step 3: Run
+### Step 1: Start Services
 
 ```bash
-npm run redis:commander
-# Visit http://localhost:8081
+docker-compose up -d
 ```
+
+### Step 2: Access Redis Commander
+
+Open your browser and navigate to:
+
+```
+http://localhost:8081
+```
+
+### Features Available
+
+- **View Keys**: Browse all Redis keys in real-time
+- **Monitor Commands**: Watch Redis commands as they execute
+- **Edit Values**: Modify key values directly from the UI
+- **Manage TTL**: Set or update key expiration times
+- **Database Stats**: View memory usage and key statistics
+- **Search**: Find keys by pattern matching
+
+### Verify It's Running
+
+```bash
+docker ps | grep redis-commander
+# Should show: ecommerce-redis-commander
+```
+
+### Stop Redis Commander
+
+```bash
+docker-compose down
+```
+
+### Notes
+
+- Redis Commander connects to the Redis service automatically via Docker networking
+- No additional npm packages needed
+- Runs on port `8081` (configurable in `docker-compose.yml`)
+- Requires Docker and Docker Compose to be running
 
 ---
 
