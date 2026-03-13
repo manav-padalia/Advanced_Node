@@ -1,9 +1,9 @@
 {
   "build": {
-    "builder": "dockerfile"
+    "builder": "dockerfile",
+    "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "node dist/services/api-gateway/server.js",
     "restartPolicyType": "on_failure",
     "restartPolicyMaxRetries": 5
   }
