@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyReply } from '@ecommerce/shared';
+import { FastifyRequest, FastifyReply } from '@ecommerce/shared/packages';
 import { UnauthorizedError } from '@ecommerce/shared';
 import { verifyAccessToken } from '../utils/jwt';
 

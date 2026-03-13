@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { jwt, type SignOptions } from '@ecommerce/shared/packages';
 import { config } from '../config';
 
 export interface JWTPayload {
@@ -10,13 +10,13 @@ export interface JWTPayload {
 export const generateAccessToken = (payload: JWTPayload): string => {
   return jwt.sign(payload, config.JWT_ACCESS_SECRET, {
     expiresIn: config.JWT_ACCESS_EXPIRY,
-  });
+  } as SignOptions);
 };
 
 export const generateRefreshToken = (payload: JWTPayload): string => {
   return jwt.sign(payload, config.JWT_REFRESH_SECRET, {
     expiresIn: config.JWT_REFRESH_EXPIRY,
-  });
+  } as SignOptions);
 };
 
 export const verifyAccessToken = (token: string): JWTPayload => {

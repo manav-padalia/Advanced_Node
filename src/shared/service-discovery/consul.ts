@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axios } from '@ecommerce/shared/packages';
 
 export type DiscoveredService = {
   id: string;
@@ -78,7 +78,7 @@ export function getAdvertiseAddress(defaultPort: number) {
     process.env.ADVERTISE_HOST ||
     process.env.HOST ||
     'localhost';
-  const port = parseInt(process.env.SERVICE_ADVERTISE_PORT || '', 10) || defaultPort;
+  const port =
+    parseInt(process.env.SERVICE_ADVERTISE_PORT || '', 10) || defaultPort;
   return { address, port };
 }
-

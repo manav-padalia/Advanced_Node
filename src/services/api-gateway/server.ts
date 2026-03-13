@@ -1,3 +1,5 @@
+import cluster from 'node:cluster';
+import os from 'node:os';
 import { buildApp } from './app';
 import {
   consulRegisterService,
@@ -6,8 +8,6 @@ import {
   getAdvertiseAddress,
 } from '@ecommerce/shared';
 import { MessagingService } from './services/messaging.service';
-import cluster from 'node:cluster';
-import os from 'node:os';
 
 const messagingService = new MessagingService();
 

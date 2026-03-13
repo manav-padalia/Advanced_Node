@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance } from '@ecommerce/shared/packages';
 import { ResponseCodes } from '@ecommerce/shared';
 
 export async function healthRoutes(fastify: FastifyInstance) {

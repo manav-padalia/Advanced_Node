@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/node';
+import { Sentry } from '@ecommerce/shared/packages';
 import { logger } from './logger';
 
 /**

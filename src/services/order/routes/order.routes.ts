@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance } from '@ecommerce/shared/packages';
 import { OrderController } from '../controllers/order.controller';
 
 const controller = new OrderController();

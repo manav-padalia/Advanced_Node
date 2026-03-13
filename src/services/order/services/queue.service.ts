@@ -1,4 +1,4 @@
-import { Queue } from 'bullmq';
+import { Queue } from '@ecommerce/shared/packages';
 
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',

@@ -1,4 +1,4 @@
-import { Queue } from 'bullmq';
+import { Queue } from '@ecommerce/shared/packages';
 import { createServiceLogger } from '@ecommerce/shared';
 
 const logger = createServiceLogger('queue-manager');

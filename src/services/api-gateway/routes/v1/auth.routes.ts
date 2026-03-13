@@ -1,8 +1,11 @@
-import { FastifyInstance } from 'fastify';
-import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
-import axios from 'axios';
-import crypto from 'crypto';
+import {
+  FastifyInstance,
+  z,
+  PrismaClient,
+  axios,
+  crypto,
+  uuidv4,
+} from '@ecommerce/shared/packages';
 import {
   ResponseCodes,
   BadRequestError,
@@ -16,7 +19,6 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from '../../utils/jwt';
-import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 

@@ -1,6 +1,6 @@
 /// <reference types="jest" />
 import { describe, it, expect, beforeAll, jest } from '@jest/globals';
-import Fastify from 'fastify';
+import { Fastify } from '@ecommerce/shared/packages';
 
 jest.mock('axios', () => ({
   put: jest.fn(async () => ({})),

@@ -1,5 +1,4 @@
-import { FastifyInstance } from 'fastify';
-import { z } from 'zod';
+import { FastifyInstance, z } from '@ecommerce/shared/packages';
 import { MessagingService } from '../../services/messaging.service';
 import { authMiddleware } from '../../middleware/auth.middleware';
 

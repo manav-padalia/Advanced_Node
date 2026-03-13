@@ -1,4 +1,4 @@
-import { Worker, Job } from 'bullmq';
+import { Worker, Job } from '@ecommerce/shared/packages';
 import { createServiceLogger } from '@ecommerce/shared';
 import prisma from '../../../shared/utils/prisma';
 

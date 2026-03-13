@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@ecommerce/shared/packages';
 
 /**
  * Singleton Prisma client instance

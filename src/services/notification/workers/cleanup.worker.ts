@@ -1,4 +1,4 @@
-import { Worker, Job } from 'bullmq';
+import { Worker, Job } from '@ecommerce/shared/packages';
 import { createServiceLogger } from '@ecommerce/shared';
 
 const logger = createServiceLogger('cleanup-worker');
@@ -26,4 +26,3 @@ cleanupWorker.on('completed', (job) => {
 cleanupWorker.on('failed', (job, err) => {
   logger.error(`Cleanup job ${job?.id} failed:`, err);
 });
-

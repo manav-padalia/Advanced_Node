@@ -1,4 +1,4 @@
-import { FastifyReply } from 'fastify';
+import { FastifyReply } from '@ecommerce/shared/packages';
 import { ApiResponse } from '../shared/types/ApiResponse';
 
 declare module 'fastify' {

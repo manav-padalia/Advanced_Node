@@ -1,5 +1,5 @@
+import { z } from '@ecommerce/shared/packages';
 import 'dotenv/config';
-import { z } from 'zod';
 
 /**
  * Environment variable validation schema

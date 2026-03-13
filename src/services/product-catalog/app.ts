@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import { Fastify } from '@ecommerce/shared/packages';
 import { responseEnhancerPlugin, createServiceLogger } from '@ecommerce/shared';
 import { productRoutes } from './routes/product.routes';
 import { categoryRoutes } from './routes/category.routes';

@@ -1,5 +1,4 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { z } from 'zod';
+import { FastifyRequest, FastifyReply, z } from '@ecommerce/shared/packages';
 import {
   ResponseCodes,
   NotFoundError,

@@ -1,4 +1,4 @@
-import { Worker, Job } from 'bullmq';
+import { Worker, Job } from '@ecommerce/shared/packages';
 import { EmailService } from '../services/email.service';
 import { createServiceLogger } from '@ecommerce/shared';
 

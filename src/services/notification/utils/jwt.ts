@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { jwt } from '@ecommerce/shared/packages';
 
 export interface JWTPayload {
   userId: string;

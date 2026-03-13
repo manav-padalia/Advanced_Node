@@ -7,7 +7,7 @@ import {
   fastifySwagger,
   fastifySwaggerUi,
   Sentry,
-} from '@ecommerce/shared';
+} from '@ecommerce/shared/packages';
 import {
   responseEnhancerPlugin,
   createServiceLogger,

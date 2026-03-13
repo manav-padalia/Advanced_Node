@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import { Redis } from '@ecommerce/shared/packages';
 
 export class CacheService {
   private redis: Redis;

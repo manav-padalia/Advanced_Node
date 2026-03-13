@@ -1,4 +1,4 @@
-import { Worker, Job } from 'bullmq';
+import { Worker, Job } from '@ecommerce/shared/packages';
 import { createServiceLogger } from '@ecommerce/shared';
 
 const logger = createServiceLogger('report-worker');
@@ -35,4 +35,3 @@ reportWorker.on('completed', (job) => {
 reportWorker.on('failed', (job, err) => {
   logger.error(`Report job ${job?.id} failed:`, err);
 });
-

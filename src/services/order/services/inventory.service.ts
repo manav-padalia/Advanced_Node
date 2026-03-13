@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { axios } from '@ecommerce/shared/packages';
 
 const INVENTORY_SERVICE_URL =
   process.env.INVENTORY_SERVICE_URL || 'http://localhost:3003';

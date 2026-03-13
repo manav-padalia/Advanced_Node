@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import { nodemailer } from '@ecommerce/shared/packages';
 import { createServiceLogger } from '@ecommerce/shared';
 
 const logger = createServiceLogger('email-service');

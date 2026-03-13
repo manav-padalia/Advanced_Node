@@ -17,7 +17,7 @@ export interface RPCOptions {
 }
 
 export class RabbitMQClient {
-  private connection: Connection | null = null;
+  private connection: any = null;
   private channel: Channel | null = null;
   private replyQueue: string | null = null;
   private pendingRPCs = new Map<
@@ -34,8 +34,14 @@ export class RabbitMQClient {
       this.connection = await amqp.connect(this.url);
       this.channel = await this.connection.createChannel();
 
+      if (!this.channel) {
+        throw new Error('Failed to create channel');
+      }
+
       // Setup reply queue for RPC responses
-      const { queue } = await this.channel.assertQueue('', { exclusive: true });
+      const { queue } = await this.channel.assertQueue('', {
+        exclusive: true,
+      });
       this.replyQueue = queue;
 
       // Consume RPC responses
@@ -52,13 +58,15 @@ export class RabbitMQClient {
       logger.info('Connected to RabbitMQ');
 
       // Handle connection errors
-      this.connection.on('error', (err: Error) => {
-        logger.error('RabbitMQ connection error:', err);
-      });
+      if (this.connection) {
+        this.connection.on('error', (err: Error) => {
+          logger.error('RabbitMQ connection error:', err);
+        });
 
-      this.connection.on('close', () => {
-        logger.warn('RabbitMQ connection closed');
-      });
+        this.connection.on('close', () => {
+          logger.warn('RabbitMQ connection closed');
+        });
+      }
     } catch (error) {
       logger.error('Failed to connect to RabbitMQ:', error);
       throw error;

@@ -1,4 +1,4 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyRequest, FastifyReply } from '@ecommerce/shared/packages';
 import { ForbiddenError } from '@ecommerce/shared';
 
 export const requireRole = (allowedRoles: string[]) => {

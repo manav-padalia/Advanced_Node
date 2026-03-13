@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import { axios, AxiosRequestConfig } from '@ecommerce/shared/packages';
 import { consulDiscoverService, InternalServerError } from '@ecommerce/shared';
 
 export class ProxyService {

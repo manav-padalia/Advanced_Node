@@ -76,6 +76,159 @@ services:
     depends_on:
       - redis
 
+  # API Gateway Service
+  api-gateway:
+    image: ecommerce-backend:latest
+    container_name: ecommerce-api-gateway
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
+      JWT_ACCESS_SECRET: your-super-secret-jwt-access-key-min-32-chars
+      JWT_REFRESH_SECRET: your-super-secret-jwt-refresh-key-min-32-chars
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      LOG_LEVEL: info
+      CORS_ORIGIN: http://localhost:3000,http://localhost:3001
+      RATE_LIMIT_MAX_REQUESTS: 100
+      RATE_LIMIT_WINDOW_MS: 60000
+    command: node dist/services/api-gateway/server.js
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_started
+
+  # Product Catalog Service
+  product-catalog:
+    image: ecommerce-backend:latest
+    container_name: ecommerce-product-catalog
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      LOG_LEVEL: info
+    command: node dist/services/product-catalog/server.js
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_started
+
+  # Order Service
+  order:
+    image: ecommerce-backend:latest
+    container_name: ecommerce-order
+    restart: unless-stopped
+    ports:
+      - '3002:3002'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3002
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      LOG_LEVEL: info
+    command: node dist/services/order/server.js
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_started
+
+  # Inventory Service
+  inventory:
+    image: ecommerce-backend:latest
+    container_name: ecommerce-inventory
+    restart: unless-stopped
+    ports:
+      - '3003:3003'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3003
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      LOG_LEVEL: info
+    command: node dist/services/inventory/server.js
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_started
+
+  # Notification Service
+  notification:
+    image: ecommerce-backend:latest
+    container_name: ecommerce-notification
+    restart: unless-stopped
+    ports:
+      - '3004:3004'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3004
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+      RABBITMQ_URL: amqp://admin:admin123@rabbitmq:5672
+      CONSUL_HOST: consul
+      CONSUL_PORT: 8500
+      LOG_LEVEL: info
+    command: node dist/services/notification/server.js
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      consul:
+        condition: service_started
+
 volumes:
   postgres_data:
     driver: local
