@@ -11,6 +11,7 @@ import {
   ConfirmReservationResponse,
   InventoryLowStockEvent,
   InventoryUpdatedEvent,
+  addErrorHelper,
 } from '@ecommerce/shared';
 import { createServiceLogger } from '@ecommerce/shared';
 import { InventoryService } from './inventory.service';
@@ -44,6 +45,10 @@ export class MessagingService {
           return result;
         } catch (error: any) {
           logger.error('Error reserving stock:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.reserveStockRPC',
+            details: error,
+          });
           return { success: false, message: error.message };
         }
       },
@@ -59,6 +64,10 @@ export class MessagingService {
           return result;
         } catch (error: any) {
           logger.error('Error releasing stock:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.releaseStockRPC',
+            details: error,
+          });
           return { success: false, message: error.message };
         }
       },
@@ -78,6 +87,10 @@ export class MessagingService {
           return result;
         } catch (error: any) {
           logger.error('Error confirming reservation:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.confirmReservationRPC',
+            details: error,
+          });
           return { success: false, message: error.message };
         }
       },
@@ -97,6 +110,10 @@ export class MessagingService {
       logger.info(`Published low stock alert for product ${event.productId}`);
     } catch (error) {
       logger.error('Failed to publish low stock alert:', error);
+      await addErrorHelper({
+        apiName: 'MessagingService.publishLowStockAlert',
+        details: error,
+      });
     }
   }
 
@@ -112,6 +129,10 @@ export class MessagingService {
       );
     } catch (error) {
       logger.error('Failed to publish inventory updated event:', error);
+      await addErrorHelper({
+        apiName: 'MessagingService.publishInventoryUpdated',
+        details: error,
+      });
     }
   }
 

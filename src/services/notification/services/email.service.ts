@@ -1,5 +1,5 @@
 import { nodemailer } from '@ecommerce/shared/packages';
-import { createServiceLogger } from '@ecommerce/shared';
+import { createServiceLogger, addErrorHelper } from '@ecommerce/shared';
 
 const logger = createServiceLogger('email-service');
 
@@ -42,6 +42,10 @@ export class EmailService {
       logger.info(`Order confirmation email sent for order ${orderId}`);
     } catch (error: any) {
       logger.error('Failed to send order confirmation email:', error);
+      await addErrorHelper({
+        apiName: 'EmailService.sendOrderConfirmation',
+        details: error,
+      });
       throw error;
     }
   }
@@ -65,6 +69,10 @@ export class EmailService {
       logger.info(`Order cancellation email sent for order ${orderId}`);
     } catch (error: any) {
       logger.error('Failed to send order cancellation email:', error);
+      await addErrorHelper({
+        apiName: 'EmailService.sendOrderCancellation',
+        details: error,
+      });
       throw error;
     }
   }
@@ -90,6 +98,10 @@ export class EmailService {
       logger.info(`Low stock alert sent for product ${productId}`);
     } catch (error: any) {
       logger.error('Failed to send low stock alert:', error);
+      await addErrorHelper({
+        apiName: 'EmailService.sendLowStockAlert',
+        details: error,
+      });
       throw error;
     }
   }
@@ -118,6 +130,10 @@ export class EmailService {
       logger.info(`Daily report sent for ${date}`);
     } catch (error: any) {
       logger.error('Failed to send daily report:', error);
+      await addErrorHelper({
+        apiName: 'EmailService.sendDailyReport',
+        details: error,
+      });
       throw error;
     }
   }

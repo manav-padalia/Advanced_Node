@@ -6,6 +6,7 @@ import {
   ProductCreatedEvent,
   ProductUpdatedEvent,
   ProductDeletedEvent,
+  addErrorHelper,
 } from '@ecommerce/shared';
 import { createServiceLogger } from '@ecommerce/shared';
 import { ProductService } from './product.service';
@@ -41,6 +42,10 @@ export class MessagingService {
           return { success: true, data: products };
         } catch (error: any) {
           logger.error('Error getting products:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.getProductsRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -56,6 +61,10 @@ export class MessagingService {
           return { success: true, data: product };
         } catch (error: any) {
           logger.error('Error getting product:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.getProductRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -82,6 +91,10 @@ export class MessagingService {
         } catch (error: any) {
           logger.error('Error creating product:', error.message || error);
           console.error('Full error:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.createProductRPC',
+            details: error,
+          });
           return { success: false, error: error.message || 'Unknown error' };
         }
       },
@@ -105,6 +118,10 @@ export class MessagingService {
           return { success: true, data: product };
         } catch (error: any) {
           logger.error('Error updating product:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.updateProductRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -127,6 +144,10 @@ export class MessagingService {
           return { success: true };
         } catch (error: any) {
           logger.error('Error deleting product:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.deleteProductRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -142,6 +163,10 @@ export class MessagingService {
           return { success: true, data: categories };
         } catch (error: any) {
           logger.error('Error getting categories:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.getCategoriesRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -157,6 +182,10 @@ export class MessagingService {
           return { success: true, data: category };
         } catch (error: any) {
           logger.error('Error getting category:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.getCategoryRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -172,6 +201,10 @@ export class MessagingService {
           return { success: true, data: category };
         } catch (error: any) {
           logger.error('Error creating category:', error.message || error);
+          await addErrorHelper({
+            apiName: 'MessagingService.createCategoryRPC',
+            details: error,
+          });
           return { success: false, error: error.message || 'Unknown error' };
         }
       },
@@ -188,6 +221,10 @@ export class MessagingService {
           return { success: true, data: category };
         } catch (error: any) {
           logger.error('Error updating category:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.updateCategoryRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -203,6 +240,10 @@ export class MessagingService {
           return { success: true };
         } catch (error: any) {
           logger.error('Error deleting category:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.deleteCategoryRPC',
+            details: error,
+          });
           return { success: false, error: error.message };
         }
       },
@@ -224,6 +265,10 @@ export class MessagingService {
       );
     } catch (error) {
       logger.error('Failed to publish product.created event:', error);
+      await addErrorHelper({
+        apiName: 'MessagingService.publishProductCreated',
+        details: error,
+      });
     }
   }
 
@@ -239,6 +284,10 @@ export class MessagingService {
       );
     } catch (error) {
       logger.error('Failed to publish product.updated event:', error);
+      await addErrorHelper({
+        apiName: 'MessagingService.publishProductUpdated',
+        details: error,
+      });
     }
   }
 
@@ -254,6 +303,10 @@ export class MessagingService {
       );
     } catch (error) {
       logger.error('Failed to publish product.deleted event:', error);
+      await addErrorHelper({
+        apiName: 'MessagingService.publishProductDeleted',
+        details: error,
+      });
     }
   }
 

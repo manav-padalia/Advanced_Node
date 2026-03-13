@@ -1,5 +1,5 @@
 import { Redis } from '@ecommerce/shared/packages';
-import { createServiceLogger } from '@ecommerce/shared';
+import { createServiceLogger, addErrorHelper } from '@ecommerce/shared';
 
 const logger = createServiceLogger('cache-service');
 
@@ -11,6 +11,7 @@ interface CacheMetrics {
 }
 
 export class CacheService {
+  private static instance: CacheService;
   private redis: Redis;
   private metrics: CacheMetrics = {
     hits: 0,
@@ -25,6 +26,13 @@ export class CacheService {
       port: parseInt(process.env.REDIS_PORT || '6379', 10),
       password: process.env.REDIS_PASSWORD,
     });
+  }
+
+  static getInstance(): CacheService {
+    if (!CacheService.instance) {
+      CacheService.instance = new CacheService();
+    }
+    return CacheService.instance;
   }
 
   async get(key: string): Promise<string | null> {
@@ -43,6 +51,10 @@ export class CacheService {
       return value;
     } catch (error) {
       logger.error({ error, key }, 'Cache get error');
+      await addErrorHelper({
+        apiName: 'CacheService.get',
+        details: error,
+      });
       return null;
     }
   }
@@ -56,6 +68,10 @@ export class CacheService {
       }
     } catch (error) {
       logger.error({ error, key }, 'Cache set error');
+      await addErrorHelper({
+        apiName: 'CacheService.set',
+        details: error,
+      });
     }
   }
 
@@ -64,6 +80,10 @@ export class CacheService {
       await this.redis.del(key);
     } catch (error) {
       logger.error({ error, key }, 'Cache delete error');
+      await addErrorHelper({
+        apiName: 'CacheService.delete',
+        details: error,
+      });
     }
   }
 
@@ -75,6 +95,10 @@ export class CacheService {
       }
     } catch (error) {
       logger.error({ error, pattern }, 'Cache deletePattern error');
+      await addErrorHelper({
+        apiName: 'CacheService.deletePattern',
+        details: error,
+      });
     }
   }
 

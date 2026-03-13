@@ -7,6 +7,7 @@ import {
   OrderCancelledEvent,
   OrderConfirmedEvent,
   InventoryLowStockEvent,
+  addErrorHelper,
 } from '@ecommerce/shared';
 import { createServiceLogger } from '@ecommerce/shared';
 import { EmailService } from './email.service';
@@ -81,6 +82,10 @@ export class MessagingService {
           );
         } catch (error) {
           logger.error('Error sending order confirmation email:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.orderCreatedConsumer',
+            details: error,
+          });
           throw error;
         }
       },
@@ -100,6 +105,10 @@ export class MessagingService {
           );
         } catch (error) {
           logger.error('Error sending order cancellation email:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.orderCancelledConsumer',
+            details: error,
+          });
           throw error;
         }
       },
@@ -119,6 +128,10 @@ export class MessagingService {
           );
         } catch (error) {
           logger.error('Error processing order confirmed event:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.orderConfirmedConsumer',
+            details: error,
+          });
           throw error;
         }
       },
@@ -141,6 +154,10 @@ export class MessagingService {
           logger.info(`Low stock alert sent for product ${event.productId}`);
         } catch (error) {
           logger.error('Error sending low stock alert:', error);
+          await addErrorHelper({
+            apiName: 'MessagingService.lowStockAlertConsumer',
+            details: error,
+          });
           throw error;
         }
       },

@@ -3,7 +3,7 @@ import { ProductRepository } from '../repositories/product.repository';
 import { CacheService } from './cache.service';
 
 const productRepository = new ProductRepository();
-const cacheService = new CacheService();
+const cacheService = CacheService.getInstance();
 
 interface ProductQuery {
   page: number;
