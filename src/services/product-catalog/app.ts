@@ -3,6 +3,7 @@ import { responseEnhancerPlugin, createServiceLogger } from '@ecommerce/shared';
 import { productRoutes } from './routes/product.routes';
 import { categoryRoutes } from './routes/category.routes';
 import { healthRoutes } from './routes/health.routes';
+import { cacheRoutes } from './routes/cache.routes';
 
 const logger = createServiceLogger('product-catalog-service');
 
@@ -19,6 +20,7 @@ export async function buildApp() {
   await app.register(healthRoutes);
   await app.register(productRoutes, { prefix: '/products' });
   await app.register(categoryRoutes, { prefix: '/categories' });
+  await app.register(cacheRoutes, { prefix: '/cache' });
 
   // Global error handler
   app.setErrorHandler((error, request, reply) => {
