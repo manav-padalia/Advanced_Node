@@ -36,72 +36,127 @@ const isValidUUID = (id: string): boolean => {
 
 export async function productsRoutes(fastify: FastifyInstance) {
   // Get all products (public)
-  fastify.get('/', async (request, reply) => {
-    try {
-      const query = querySchema.parse(request.query);
-      const result = await messagingService.getProducts(query);
-      return reply.send({
-        status: 200,
-        message: 'Products fetched successfully',
-        data: result,
-        error: '',
-      });
-    } catch (error: any) {
-      if (error instanceof z.ZodError) {
-        return reply.status(400).send({
-          status: 400,
-          message: 'Validation error',
+  fastify.get(
+    '/',
+    {
+      schema: {
+        tags: ['Products'],
+        summary: 'List products',
+        description: 'Returns a paginated list of products. Public endpoint.',
+        querystring: {
+          type: 'object',
+          properties: {
+            page: { type: 'integer', default: 1 },
+            limit: { type: 'integer', default: 20, maximum: 100 },
+            categoryId: { type: 'string', format: 'uuid' },
+            minPrice: { type: 'number' },
+            maxPrice: { type: 'number' },
+            search: { type: 'string' },
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const query = querySchema.parse(request.query);
+        const result = await messagingService.getProducts(query);
+        return reply.send({
+          status: 200,
+          message: 'Products fetched successfully',
+          data: result,
+          error: '',
+        });
+      } catch (error: any) {
+        if (error instanceof z.ZodError) {
+          return reply.status(400).send({
+            status: 400,
+            message: 'Validation error',
+            data: {},
+            error: error.errors
+              .map((e) => `${e.path.join('.')}: ${e.message}`)
+              .join(', '),
+          });
+        }
+        return reply.status(500).send({
+          status: 500,
+          message: error.message || 'Failed to fetch products',
           data: {},
-          error: error.errors
-            .map((e) => `${e.path.join('.')}: ${e.message}`)
-            .join(', '),
+          error: error.message || 'Failed to fetch products',
         });
       }
-      return reply.status(500).send({
-        status: 500,
-        message: error.message || 'Failed to fetch products',
-        data: {},
-        error: error.message || 'Failed to fetch products',
-      });
-    }
-  });
+    },
+  );
 
   // Get product by ID (public)
-  fastify.get('/:id', async (request, reply) => {
-    try {
-      const { id } = request.params as { id: string };
+  fastify.get(
+    '/:id',
+    {
+      schema: {
+        tags: ['Products'],
+        summary: 'Get product by ID',
+        params: {
+          type: 'object',
+          properties: { id: { type: 'string', format: 'uuid' } },
+          required: ['id'],
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { id } = request.params as { id: string };
 
-      // Validate UUID format
-      if (!isValidUUID(id)) {
-        return reply.status(400).send({
-          status: 400,
-          message: 'Validation error',
+        // Validate UUID format
+        if (!isValidUUID(id)) {
+          return reply.status(400).send({
+            status: 400,
+            message: 'Validation error',
+            data: {},
+            error: 'Invalid product ID format. Must be a valid UUID.',
+          });
+        }
+
+        const result = await messagingService.getProductById(id);
+        return reply.send({
+          status: 200,
+          message: 'Product fetched successfully',
+          data: result,
+          error: '',
+        });
+      } catch (error: any) {
+        return reply.status(500).send({
+          status: 500,
+          message: error.message || 'Failed to fetch product',
           data: {},
-          error: 'Invalid product ID format. Must be a valid UUID.',
+          error: error.message || 'Failed to fetch product',
         });
       }
-
-      const result = await messagingService.getProductById(id);
-      return reply.send({
-        status: 200,
-        message: 'Product fetched successfully',
-        data: result,
-        error: '',
-      });
-    } catch (error: any) {
-      return reply.status(500).send({
-        status: 500,
-        message: error.message || 'Failed to fetch product',
-        data: {},
-        error: error.message || 'Failed to fetch product',
-      });
-    }
-  });
+    },
+  );
 
   // Create product (admin only)
   fastify.post(
     '/',
-    { preHandler: [authMiddleware, requireAdmin] },
+    {
+      preHandler: [authMiddleware, requireAdmin],
+      schema: {
+        tags: ['Products'],
+        summary: 'Create product (Admin)',
+        security: [{ bearerAuth: [] }],
+        body: {
+          type: 'object',
+          required: ['sku', 'name', 'slug', 'price', 'categoryId'],
+          properties: {
+            sku: { type: 'string' },
+            name: { type: 'string' },
+            slug: { type: 'string' },
+            description: { type: 'string' },
+            price: { type: 'number' },
+            categoryId: { type: 'string', format: 'uuid' },
+            imageUrl: { type: 'string', format: 'uri' },
+          },
+        },
+      },
+    },
     async (request, reply) => {
       try {
         // Validate request body
@@ -137,7 +192,19 @@ export async function productsRoutes(fastify: FastifyInstance) {
   // Update product (admin only)
   fastify.put(
     '/:id',
-    { preHandler: [authMiddleware, requireAdmin] },
+    {
+      preHandler: [authMiddleware, requireAdmin],
+      schema: {
+        tags: ['Products'],
+        summary: 'Update product (Admin)',
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          properties: { id: { type: 'string', format: 'uuid' } },
+          required: ['id'],
+        },
+      },
+    },
     async (request, reply) => {
       try {
         const { id } = request.params as { id: string };
@@ -197,7 +264,19 @@ export async function productsRoutes(fastify: FastifyInstance) {
   // Delete product (admin only)
   fastify.delete(
     '/:id',
-    { preHandler: [authMiddleware, requireAdmin] },
+    {
+      preHandler: [authMiddleware, requireAdmin],
+      schema: {
+        tags: ['Products'],
+        summary: 'Delete product (Admin)',
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          properties: { id: { type: 'string', format: 'uuid' } },
+          required: ['id'],
+        },
+      },
+    },
     async (request, reply) => {
       try {
         const { id } = request.params as { id: string };

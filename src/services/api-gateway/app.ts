@@ -19,8 +19,7 @@ import { productsRoutes } from './routes/v1/products.routes';
 import { categoriesRoutes } from './routes/v1/categories.routes';
 import { ordersRoutes } from './routes/v1/orders.routes';
 import { healthRoutes } from './routes/health.routes';
-import { authMiddleware } from './middleware/auth.middleware';
-import { requireAdmin } from './middleware/rbac.middleware';
+import { metricsRoutes } from './routes/metrics.routes';
 
 const logger = createServiceLogger('api-gateway');
 
@@ -63,7 +62,19 @@ export async function buildApp() {
     openapi: {
       info: {
         title: 'E-Commerce API Gateway',
-        description: 'API Gateway for E-Commerce Microservices',
+        description: [
+          'API Gateway for E-Commerce Microservices.',
+          '',
+          '## Authentication',
+          'Protected endpoints require a Bearer token in the Authorization header.',
+          'Obtain a token via `POST /v1/auth/login` then click **Authorize** above.',
+          '',
+          '## Rate Limiting',
+          `${config.RATE_LIMIT_MAX_REQUESTS} requests per ${config.RATE_LIMIT_WINDOW_MS / 60000} minutes per user/IP.`,
+          '',
+          '## Error Format',
+          'All errors follow: `{ status, message, data, error }`',
+        ].join('\n'),
         version: '1.0.0',
       },
       servers: [
@@ -72,6 +83,16 @@ export async function buildApp() {
           description: 'Development server',
         },
       ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            description: 'JWT access token from /v1/auth/login',
+          },
+        },
+      },
     },
   });
 
@@ -87,6 +108,7 @@ export async function buildApp() {
   // Bull Board code removed to avoid dependency conflicts
 
   // Register routes
+  await app.register(metricsRoutes);
   await app.register(healthRoutes);
   await app.register(authRoutes, { prefix: '/v1/auth' });
   await app.register(productsRoutes, { prefix: '/v1/products' });

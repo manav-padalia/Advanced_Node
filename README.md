@@ -268,11 +268,10 @@ See `.env.example` for all required variables.
 
 - **[Quick Start Guide](./QUICK_START.md)** - Step-by-step setup with troubleshooting
 - **[RabbitMQ Migration Guide](./RABBITMQ_MIGRATION.md)** - Complete guide to RabbitMQ implementation
-- **[RabbitMQ Architecture](./docs/RABBITMQ_ARCHITECTURE.md)** - Detailed architecture diagrams and patterns
-- **[Implementation Summary](./IMPLEMENTATION_SUMMARY.md)** - What changed in the migration
-- [Manual Testing Plan](./MANUAL_TESTING_PLAN.md) - Testing scenarios
-- [Project Info](./PROJECT_INFO.md) - Project overview
-- [Setup Guide](./SETUP.md) - Detailed setup instructions
+- **[RabbitMQ Architecture](./docs/rabbitmq-architecture.md)** - Detailed architecture diagrams and patterns
+- **[System Architecture](./docs/architecture.md)** - Microservices layout, ERD, and tech stack
+- **[Deployment Guide](./docs/deployment.md)** - Local, Docker, Railway, Render, CI/CD
+- **[Load Testing](./tests/load/README.md)** - K6 load test scripts and instructions
 
 ## 🚀 Production Deployment
 

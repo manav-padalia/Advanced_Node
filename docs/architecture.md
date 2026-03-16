@@ -1,0 +1,177 @@
+# System Architecture
+
+## Microservices Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          CLIENT / BROWSER                           │
+└─────────────────────────────┬───────────────────────────────────────┘
+                              │ HTTP/HTTPS
+                              ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        API GATEWAY  :3000                           │
+│  • JWT Authentication      • Rate Limiting (100 req/15min)          │
+│  • RBAC Middleware          • Swagger UI (/docs)                     │
+│  • CORS / Helmet            • Request Validation (Zod)              │
+│  • Response Compression     • Error Handling + Sentry               │
+└──────┬──────────────┬───────────────┬──────────────────────────────┘
+       │ RabbitMQ RPC │               │ HTTP Proxy
+       ▼              ▼               ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────────┐
+│   PRODUCT    │ │  INVENTORY   │ │   ORDER SERVICE  │
+│   CATALOG    │ │   SERVICE    │ │      :3002        │
+│    :3001     │ │    :3003     │ │                  │
+│              │ │              │ │  • Order CRUD    │
+│ • Products   │ │ • Stock Mgmt │ │  • Stripe Pay    │
+│ • Categories │ │ • Reservations│ │  • Status Flow  │
+│ • Redis Cache│ │ • Low Stock  │ │                  │
+└──────┬───────┘ └──────┬───────┘ └────────┬─────────┘
+       │                │                   │
+       └────────────────┴───────────────────┘
+                        │ RabbitMQ Events
+                        ▼
+              ┌─────────────────────┐
+              │  NOTIFICATION SVC   │
+              │       :3004         │
+              │                     │
+              │  • Email (SMTP)     │
+              │  • Socket.IO RT     │
+              │  • BullMQ Workers   │
+              │  • Alert Jobs       │
+              └─────────────────────┘
+```
+
+## Infrastructure
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                     INFRASTRUCTURE                        │
+│                                                          │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐  │
+│  │ PostgreSQL  │  │    Redis    │  │    RabbitMQ     │  │
+│  │   :5432     │  │    :6379    │  │  :5672 / :15672 │  │
+│  │             │  │             │  │                 │  │
+│  │ Primary DB  │  │ Cache +     │  │ Message Broker  │  │
+│  │ Prisma ORM  │  │ BullMQ Jobs │  │ RPC + Events    │  │
+│  └─────────────┘  └─────────────┘  └─────────────────┘  │
+│                                                          │
+│  ┌─────────────┐                                         │
+│  │   Consul    │                                         │
+│  │    :8500    │                                         │
+│  │             │                                         │
+│  │  Service    │                                         │
+│  │  Discovery  │                                         │
+│  └─────────────┘                                         │
+└──────────────────────────────────────────────────────────┘
+```
+
+## Service Communication Flow
+
+### RPC Pattern (Synchronous-like via RabbitMQ)
+
+```
+API Gateway                RabbitMQ              Product/Inventory Service
+    │                          │                          │
+    │──── RPC Request ────────►│                          │
+    │     (correlationId)      │──── Deliver to Queue ───►│
+    │                          │                          │── Process ──┐
+    │                          │                          │◄────────────┘
+    │◄─── RPC Response ────────│◄─── Reply to Queue ──────│
+    │     (correlationId)      │                          │
+```
+
+### Event Pattern (Async via RabbitMQ)
+
+```
+Order Service              RabbitMQ Exchange         Notification Service
+    │                          │                          │
+    │──── Publish Event ──────►│                          │
+    │     order.created        │──── Fan-out ────────────►│
+    │                          │                          │── Send Email
+    │                          │──── Fan-out ────────────►│
+    │                          │                     Inventory Service
+    │                          │                          │── Release Stock
+```
+
+## Database Schema (ERD)
+
+```
+┌─────────────┐       ┌──────────────────┐
+│    users    │       │  refresh_tokens  │
+│─────────────│       │──────────────────│
+│ id (PK)     │──────►│ id (PK)          │
+│ email       │       │ token            │
+│ password_hash│      │ user_id (FK)     │
+│ first_name  │       │ expires_at       │
+│ last_name   │       └──────────────────┘
+│ role        │
+│ provider    │       ┌──────────────────┐
+│ is_active   │──────►│     orders       │
+│ email_verified│     │──────────────────│
+└─────────────┘       │ id (PK)          │
+                      │ order_number     │
+┌─────────────┐       │ user_id (FK)     │
+│ categories  │       │ status           │
+│─────────────│       │ payment_status   │
+│ id (PK)     │       │ subtotal         │
+│ name        │       │ tax              │
+│ slug        │       │ total            │
+│ description │       │ shipping_address │
+│ parent_id   │◄──┐   └────────┬─────────┘
+│ is_active   │   │            │
+└──────┬──────┘   │   ┌────────▼─────────┐
+       │          │   │   order_items    │
+       │          │   │──────────────────│
+┌──────▼──────┐   │   │ id (PK)          │
+│  products   │   │   │ order_id (FK)    │
+│─────────────│   │   │ product_id (FK)  │
+│ id (PK)     │   │   │ quantity         │
+│ sku         │   │   │ price            │
+│ name        │   │   │ subtotal         │
+│ slug        │   │   └──────────────────┘
+│ description │   │
+│ price       │   │   ┌──────────────────┐
+│ category_id │───┘   │    payments      │
+│ image_url   │       │──────────────────│
+│ is_active   │       │ id (PK)          │
+└──────┬──────┘       │ order_id (FK)    │
+       │              │ amount           │
+┌──────▼──────┐       │ payment_method   │
+│  inventory  │       │ transaction_id   │
+│─────────────│       │ status           │
+│ id (PK)     │       └──────────────────┘
+│ product_id  │
+│ quantity    │       ┌──────────────────┐
+│ reserved_qty│       │     errors       │
+│ low_stock_  │       │──────────────────│
+│  threshold  │       │ id (PK)          │
+└─────────────┘       │ api_name         │
+                      │ err_message      │
+                      │ details (JSON)   │
+                      │ created_at       │
+                      └──────────────────┘
+```
+
+## Technology Stack
+
+| Layer             | Technology      | Purpose                     |
+| ----------------- | --------------- | --------------------------- |
+| Runtime           | Node.js 20+     | JavaScript runtime          |
+| Language          | TypeScript 5.x  | Type safety                 |
+| Framework         | Fastify 4.x     | HTTP server                 |
+| Database          | PostgreSQL 16   | Primary data store          |
+| ORM               | Prisma 5.x      | Database access             |
+| Cache             | Redis 7         | Response caching, sessions  |
+| Message Broker    | RabbitMQ 3      | Inter-service communication |
+| Job Queue         | BullMQ          | Background job processing   |
+| Real-time         | Socket.IO       | WebSocket connections       |
+| Auth              | JWT + OAuth2    | Authentication              |
+| Payments          | Stripe          | Payment processing          |
+| Email             | Nodemailer      | Transactional email         |
+| Validation        | Zod             | Schema validation           |
+| Logging           | Pino            | Structured logging          |
+| Error Tracking    | Sentry          | Error monitoring            |
+| Service Discovery | Consul          | Service registry            |
+| API Docs          | Swagger/OpenAPI | API documentation           |
+| Containerization  | Docker          | Deployment                  |
+| CI/CD             | GitHub Actions  | Automation                  |

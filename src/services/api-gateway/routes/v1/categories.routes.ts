@@ -28,61 +28,96 @@ const isValidUUID = (id: string): boolean => {
 
 export async function categoriesRoutes(fastify: FastifyInstance) {
   // Get all categories (public)
-  fastify.get('/', async (request, reply) => {
-    try {
-      const result = await messagingService.getCategories();
-      return reply.send({
-        status: 200,
-        message: 'Categories fetched successfully',
-        data: result,
-        error: '',
-      });
-    } catch (error: any) {
-      return reply.status(500).send({
-        status: 500,
-        message: error.message || 'Failed to fetch categories',
-        data: {},
-        error: error.message || 'Failed to fetch categories',
-      });
-    }
-  });
-
-  // Get category by ID (public)
-  fastify.get('/:id', async (request, reply) => {
-    try {
-      const { id } = request.params as { id: string };
-
-      // Validate UUID format
-      if (!isValidUUID(id)) {
-        return reply.status(400).send({
-          status: 400,
-          message: 'Validation error',
+  fastify.get(
+    '/',
+    { schema: { tags: ['Categories'], summary: 'List all categories' } },
+    async (request, reply) => {
+      try {
+        const result = await messagingService.getCategories();
+        return reply.send({
+          status: 200,
+          message: 'Categories fetched successfully',
+          data: result,
+          error: '',
+        });
+      } catch (error: any) {
+        return reply.status(500).send({
+          status: 500,
+          message: error.message || 'Failed to fetch categories',
           data: {},
-          error: 'Invalid category ID format. Must be a valid UUID.',
+          error: error.message || 'Failed to fetch categories',
         });
       }
+    },
+  );
 
-      const result = await messagingService.getCategoryById(id);
-      return reply.send({
-        status: 200,
-        message: 'Category fetched successfully',
-        data: result,
-        error: '',
-      });
-    } catch (error: any) {
-      return reply.status(500).send({
-        status: 500,
-        message: error.message || 'Failed to fetch category',
-        data: {},
-        error: error.message || 'Failed to fetch category',
-      });
-    }
-  });
+  // Get category by ID (public)
+  fastify.get(
+    '/:id',
+    {
+      schema: {
+        tags: ['Categories'],
+        summary: 'Get category by ID',
+        params: {
+          type: 'object',
+          properties: { id: { type: 'string', format: 'uuid' } },
+          required: ['id'],
+        },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const { id } = request.params as { id: string };
+
+        // Validate UUID format
+        if (!isValidUUID(id)) {
+          return reply.status(400).send({
+            status: 400,
+            message: 'Validation error',
+            data: {},
+            error: 'Invalid category ID format. Must be a valid UUID.',
+          });
+        }
+
+        const result = await messagingService.getCategoryById(id);
+        return reply.send({
+          status: 200,
+          message: 'Category fetched successfully',
+          data: result,
+          error: '',
+        });
+      } catch (error: any) {
+        return reply.status(500).send({
+          status: 500,
+          message: error.message || 'Failed to fetch category',
+          data: {},
+          error: error.message || 'Failed to fetch category',
+        });
+      }
+    },
+  );
 
   // Create category (admin only)
   fastify.post(
     '/',
-    { preHandler: [authMiddleware, requireAdmin] },
+    {
+      preHandler: [authMiddleware, requireAdmin],
+      schema: {
+        tags: ['Categories'],
+        summary: 'Create category (Admin)',
+        security: [{ bearerAuth: [] }],
+        body: {
+          type: 'object',
+          required: ['name', 'slug'],
+          properties: {
+            name: { type: 'string' },
+            slug: { type: 'string' },
+            description: { type: 'string' },
+            parentId: { type: 'string', format: 'uuid', nullable: true },
+          },
+        },
+      },
+    },
     async (request, reply) => {
       try {
         // Validate request body
@@ -118,7 +153,19 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
   // Update category (admin only)
   fastify.put(
     '/:id',
-    { preHandler: [authMiddleware, requireAdmin] },
+    {
+      preHandler: [authMiddleware, requireAdmin],
+      schema: {
+        tags: ['Categories'],
+        summary: 'Update category (Admin)',
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          properties: { id: { type: 'string', format: 'uuid' } },
+          required: ['id'],
+        },
+      },
+    },
     async (request, reply) => {
       try {
         const { id } = request.params as { id: string };
@@ -178,7 +225,19 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
   // Delete category (admin only)
   fastify.delete(
     '/:id',
-    { preHandler: [authMiddleware, requireAdmin] },
+    {
+      preHandler: [authMiddleware, requireAdmin],
+      schema: {
+        tags: ['Categories'],
+        summary: 'Delete category (Admin)',
+        security: [{ bearerAuth: [] }],
+        params: {
+          type: 'object',
+          properties: { id: { type: 'string', format: 'uuid' } },
+          required: ['id'],
+        },
+      },
+    },
     async (request, reply) => {
       try {
         const { id } = request.params as { id: string };
