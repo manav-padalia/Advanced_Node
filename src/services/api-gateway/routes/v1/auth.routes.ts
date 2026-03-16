@@ -412,6 +412,10 @@ export async function authRoutes(fastify: FastifyInstance) {
           role: user.role,
         });
 
+        // Clean up expired tokens then store the new one
+        await prisma.refreshToken.deleteMany({
+          where: { userId: user.id, expiresAt: { lt: new Date() } },
+        });
         await prisma.refreshToken.create({
           data: {
             id: uuidv4(),
@@ -493,7 +497,12 @@ export async function authRoutes(fastify: FastifyInstance) {
       try {
         const body = refreshSchema.parse(request.body);
 
-        const payload = verifyRefreshToken(body.refreshToken);
+        let payload: ReturnType<typeof verifyRefreshToken>;
+        try {
+          payload = verifyRefreshToken(body.refreshToken);
+        } catch {
+          throw new UnauthorizedError('Invalid or expired refresh token');
+        }
 
         const storedToken = await prisma.refreshToken.findUnique({
           where: { token: body.refreshToken },
@@ -530,7 +539,10 @@ export async function authRoutes(fastify: FastifyInstance) {
           apiName: 'AuthRoutes.refresh',
           details: err,
         });
-        if (err instanceof UnauthorizedError) {
+        if (
+          err instanceof UnauthorizedError ||
+          err instanceof BadRequestError
+        ) {
           throw err;
         }
         return reply.serverError({

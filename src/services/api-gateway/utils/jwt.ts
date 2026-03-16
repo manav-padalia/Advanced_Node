@@ -14,9 +14,12 @@ export const generateAccessToken = (payload: JWTPayload): string => {
 };
 
 export const generateRefreshToken = (payload: JWTPayload): string => {
-  return jwt.sign(payload, config.JWT_REFRESH_SECRET, {
-    expiresIn: config.JWT_REFRESH_EXPIRY,
-  } as SignOptions);
+  // Include a unique jti so concurrent logins never produce duplicate tokens
+  return jwt.sign(
+    { ...payload, jti: require('crypto').randomBytes(16).toString('hex') },
+    config.JWT_REFRESH_SECRET,
+    { expiresIn: config.JWT_REFRESH_EXPIRY } as SignOptions,
+  );
 };
 
 export const verifyAccessToken = (token: string): JWTPayload => {

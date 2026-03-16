@@ -1,8 +1,11 @@
 import { FastifyInstance, z } from '@ecommerce/shared/packages';
-import { MessagingService } from '../../services/messaging.service';
+import { ProxyService } from '../../services/proxy.service';
 import { authMiddleware } from '../../middleware/auth.middleware';
 
-const messagingService = new MessagingService();
+const proxyService = new ProxyService();
+const ORDER_SERVICE_URL =
+  process.env.ORDER_SERVICE_URL || 'http://localhost:3002';
+const ORDER_SERVICE_NAME = process.env.ORDER_SERVICE_NAME || 'ecommerce-order';
 
 // Validation schemas
 const createOrderSchema = z.object({
@@ -11,7 +14,7 @@ const createOrderSchema = z.object({
       z.object({
         productId: z.string().uuid('Invalid product ID'),
         quantity: z.number().int().positive('Quantity must be greater than 0'),
-        price: z.number().positive('Price must be greater than 0'),
+        price: z.number().positive('Price must be greater than 0').optional(),
       }),
     )
     .min(1, 'At least one item is required'),
@@ -31,29 +34,27 @@ const querySchema = z.object({
   status: z.string().optional(),
 });
 
-// Helper function to validate UUID
-const isValidUUID = (id: string): boolean => {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    id,
-  );
-};
+const isValidUUID = (id: string): boolean =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
 export async function ordersRoutes(fastify: FastifyInstance) {
-  // All order routes require authentication
   fastify.addHook('preHandler', authMiddleware);
 
-  // Get user orders
+  // GET /v1/orders — list user orders
   fastify.get('/', async (request, reply) => {
     try {
-      const query = querySchema.parse(request.query);
-      const result = await messagingService.getUserOrders(
-        request.user!.userId,
-        query,
+      querySchema.parse(request.query);
+      const result = await proxyService.forward(
+        ORDER_SERVICE_NAME,
+        ORDER_SERVICE_URL,
+        '/orders',
+        'GET',
+        { userId: request.user!.userId },
       );
       return reply.send({
         status: 200,
         message: 'Orders fetched successfully',
-        data: result,
+        data: result.data?.orders ?? result.data ?? result,
         error: '',
       });
     } catch (error: any) {
@@ -76,29 +77,29 @@ export async function ordersRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Get order by ID
+  // GET /v1/orders/:id — get order by ID
   fastify.get('/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    if (!isValidUUID(id)) {
+      return reply.status(400).send({
+        status: 400,
+        message: 'Validation error',
+        data: {},
+        error: 'Invalid order ID format. Must be a valid UUID.',
+      });
+    }
     try {
-      const { id } = request.params as { id: string };
-
-      // Validate UUID format
-      if (!isValidUUID(id)) {
-        return reply.status(400).send({
-          status: 400,
-          message: 'Validation error',
-          data: {},
-          error: 'Invalid order ID format. Must be a valid UUID.',
-        });
-      }
-
-      const result = await messagingService.getOrderById(
-        id,
-        request.user!.userId,
+      const result = await proxyService.forward(
+        ORDER_SERVICE_NAME,
+        ORDER_SERVICE_URL,
+        `/orders/${id}`,
+        'GET',
+        { userId: request.user!.userId },
       );
       return reply.send({
         status: 200,
         message: 'Order fetched successfully',
-        data: result,
+        data: result.data?.order ?? result.data ?? result,
         error: '',
       });
     } catch (error: any) {
@@ -111,18 +112,29 @@ export async function ordersRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Create order (checkout)
+  // POST /v1/orders — create order
   fastify.post('/', async (request, reply) => {
     try {
       const validatedData = createOrderSchema.parse(request.body);
-      const result = await messagingService.createOrder({
-        ...validatedData,
-        userId: request.user!.userId,
-      });
+      const result = await proxyService.forward(
+        ORDER_SERVICE_NAME,
+        ORDER_SERVICE_URL,
+        '/orders',
+        'POST',
+        {
+          userId: request.user!.userId,
+          items: validatedData.items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+          shippingAddress: validatedData.shippingAddress,
+          paymentMethodId: validatedData.paymentMethod,
+        },
+      );
       return reply.status(201).send({
         status: 201,
         message: 'Order created successfully',
-        data: result,
+        data: result.data?.order ?? result.data ?? result,
         error: '',
       });
     } catch (error: any) {
@@ -145,29 +157,29 @@ export async function ordersRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Cancel order
+  // PUT /v1/orders/:id/cancel — cancel order
   fastify.put('/:id/cancel', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    if (!isValidUUID(id)) {
+      return reply.status(400).send({
+        status: 400,
+        message: 'Validation error',
+        data: {},
+        error: 'Invalid order ID format. Must be a valid UUID.',
+      });
+    }
     try {
-      const { id } = request.params as { id: string };
-
-      // Validate UUID format
-      if (!isValidUUID(id)) {
-        return reply.status(400).send({
-          status: 400,
-          message: 'Validation error',
-          data: {},
-          error: 'Invalid order ID format. Must be a valid UUID.',
-        });
-      }
-
-      const result = await messagingService.cancelOrder(
-        id,
-        request.user!.userId,
+      const result = await proxyService.forward(
+        ORDER_SERVICE_NAME,
+        ORDER_SERVICE_URL,
+        `/orders/${id}/cancel`,
+        'PUT',
+        { userId: request.user!.userId },
       );
       return reply.status(200).send({
         status: 200,
         message: 'Order cancelled successfully',
-        data: result,
+        data: result.data?.order ?? result.data ?? result,
         error: '',
       });
     } catch (error: any) {

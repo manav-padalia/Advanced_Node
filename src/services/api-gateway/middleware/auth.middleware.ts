@@ -1,5 +1,4 @@
 import { FastifyRequest, FastifyReply } from '@ecommerce/shared/packages';
-import { UnauthorizedError } from '@ecommerce/shared';
 import { verifyAccessToken } from '../utils/jwt';
 
 declare module 'fastify' {
@@ -16,13 +15,18 @@ export const authMiddleware = async (
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
+  const authHeader = request.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return reply.status(401).send({
+      status: 401,
+      message: 'Missing or invalid authorization header',
+      data: {},
+      error: 'Missing or invalid authorization header',
+    });
+  }
+
   try {
-    const authHeader = request.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedError('Missing or invalid authorization header');
-    }
-
     const token = authHeader.substring(7);
     const payload = verifyAccessToken(token);
 
@@ -32,6 +36,11 @@ export const authMiddleware = async (
       role: payload.role,
     };
   } catch (error) {
-    throw new UnauthorizedError('Invalid or expired token');
+    return reply.status(401).send({
+      status: 401,
+      message: 'Invalid or expired token',
+      data: {},
+      error: 'Invalid or expired token',
+    });
   }
 };

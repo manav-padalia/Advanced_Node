@@ -1,6 +1,7 @@
 import { Fastify } from '@ecommerce/shared/packages';
 import { responseEnhancerPlugin, createServiceLogger } from '@ecommerce/shared';
 import { healthRoutes } from './routes/health.routes';
+import { bullBoardPlugin } from './plugins/bull-board.plugin';
 
 const logger = createServiceLogger('notification-service');
 
@@ -12,6 +13,9 @@ export async function buildApp() {
   });
 
   await app.register(responseEnhancerPlugin);
+
+  // Bull Board job monitoring dashboard — http://localhost:3004/admin/queues
+  await app.register(bullBoardPlugin);
 
   // Register routes
   await app.register(healthRoutes);

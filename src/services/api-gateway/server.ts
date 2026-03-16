@@ -8,7 +8,10 @@ import {
   getAdvertiseAddress,
 } from '@ecommerce/shared';
 import { MessagingService } from './services/messaging.service';
+import { PrismaClient } from '@prisma/client';
+import argon2 from 'argon2';
 
+const prisma = new PrismaClient();
 const messagingService = new MessagingService();
 
 const logger = createServiceLogger('api-gateway');
@@ -18,8 +21,36 @@ const CONSUL_SERVICE_PREFIX = process.env.CONSUL_SERVICE_PREFIX || 'ecommerce';
 const SERVICE_NAME = `${CONSUL_SERVICE_PREFIX}-api-gateway`;
 const SERVICE_ID = `${SERVICE_NAME}-${PORT}`;
 
+async function ensureUser(
+  email: string,
+  password: string,
+  role: 'ADMIN' | 'USER',
+  firstName: string,
+) {
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (!existing) {
+    const passwordHash = await argon2.hash(password);
+    await prisma.user.create({
+      data: {
+        email,
+        passwordHash,
+        firstName,
+        lastName: 'User',
+        role,
+        isActive: true,
+        emailVerified: true,
+      },
+    });
+    logger.info(`${role} user created: ${email}`);
+  }
+}
+
 async function start() {
   try {
+    // Ensure default users exist
+    await ensureUser('admin@ecommerce.com', 'Admin@1234', 'ADMIN', 'Admin');
+    await ensureUser('user@ecommerce.com', 'User@1234', 'USER', 'User');
+
     // Initialize RabbitMQ messaging
     await messagingService.initialize();
     logger.info('RabbitMQ messaging initialized');
