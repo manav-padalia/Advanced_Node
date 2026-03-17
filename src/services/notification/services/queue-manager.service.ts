@@ -33,14 +33,14 @@ export const initializeScheduledJobs = async () => {
         },
         removeOnComplete: true,
         removeOnFail: false,
-      },
+      }
     );
 
     logger.info('Scheduled jobs initialized successfully');
   } catch (error: any) {
     logger.error(
       { error: error.message },
-      'Failed to initialize scheduled jobs',
+      'Failed to initialize scheduled jobs'
     );
     throw error;
   }

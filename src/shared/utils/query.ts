@@ -8,11 +8,11 @@ export type ListQuery = {
 
 export function parseListQuery(
   raw: any,
-  defaults: { page?: number; limit?: number; maxLimit?: number } = {},
+  defaults: { page?: number; limit?: number; maxLimit?: number } = {}
 ): ListQuery {
   const page = Math.max(
     1,
-    parseInt(raw?.page ?? `${defaults.page ?? 1}`, 10) || 1,
+    parseInt(raw?.page ?? `${defaults.page ?? 1}`, 10) || 1
   );
   const requestedLimit =
     parseInt(raw?.limit ?? `${defaults.limit ?? 20}`, 10) || 20;
@@ -24,11 +24,12 @@ export function parseListQuery(
       ? raw.sortBy.trim()
       : undefined;
   const sortOrder =
-    raw?.sortOrder === 'asc' || raw?.sortOrder === 'desc' ? raw.sortOrder : 'desc';
+    raw?.sortOrder === 'asc' || raw?.sortOrder === 'desc'
+      ? raw.sortOrder
+      : 'desc';
 
   const q =
     typeof raw?.q === 'string' && raw.q.trim() ? raw.q.trim() : undefined;
 
   return { page, limit, sortBy, sortOrder, q };
 }
-

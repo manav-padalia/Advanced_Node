@@ -35,7 +35,7 @@ export class InventoryService {
   // Helper method to check and emit low stock alert
   async checkAndEmitLowStockAlert(
     productId: string,
-    inventory: any,
+    inventory: any
   ): Promise<void> {
     if (inventory.quantity <= inventory.lowStockThreshold) {
       // This will be called by messaging service
@@ -49,7 +49,7 @@ export class InventoryService {
     for (const item of items) {
       const result = await inventoryRepository.reserveStock(
         item.productId,
-        item.quantity,
+        item.quantity
       );
 
       if (!result) {
@@ -57,7 +57,7 @@ export class InventoryService {
         for (const reserved of results) {
           await inventoryRepository.releaseStock(
             reserved.productId,
-            reserved.quantity,
+            reserved.quantity
           );
         }
 
@@ -82,12 +82,12 @@ export class InventoryService {
   }
 
   async confirmReservation(
-    items: Array<{ productId: string; quantity: number }>,
+    items: Array<{ productId: string; quantity: number }>
   ) {
     for (const item of items) {
       await inventoryRepository.confirmReservation(
         item.productId,
-        item.quantity,
+        item.quantity
       );
     }
 

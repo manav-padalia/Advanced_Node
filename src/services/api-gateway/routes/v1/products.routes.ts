@@ -30,7 +30,7 @@ const querySchema = z.object({
 // Helper function to validate UUID
 const isValidUUID = (id: string): boolean => {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    id,
+    id
   );
 };
 
@@ -84,7 +84,7 @@ export async function productsRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to fetch products',
         });
       }
-    },
+    }
   );
 
   // Get product by ID (public)
@@ -130,7 +130,7 @@ export async function productsRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to fetch product',
         });
       }
-    },
+    }
   );
 
   // Create product (admin only)
@@ -186,7 +186,7 @@ export async function productsRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to create product',
         });
       }
-    },
+    }
   );
 
   // Update product (admin only)
@@ -258,7 +258,7 @@ export async function productsRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to update product',
         });
       }
-    },
+    }
   );
 
   // Delete product (admin only)
@@ -306,6 +306,6 @@ export async function productsRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to delete product',
         });
       }
-    },
+    }
   );
 }

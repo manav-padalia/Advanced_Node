@@ -16,7 +16,7 @@ export const cleanupWorker = new Worker(
     // Placeholder: implement real cleanup (expired tokens, old logs, etc.)
     return { cleanedAt: new Date().toISOString(), job: job.name };
   },
-  { connection, concurrency: 1 },
+  { connection, concurrency: 1 }
 );
 
 cleanupWorker.on('completed', (job) => {

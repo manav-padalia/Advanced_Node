@@ -7,7 +7,7 @@ async function ensureUser(
   email: string,
   password: string,
   role: 'ADMIN' | 'USER',
-  firstName: string,
+  firstName: string
 ) {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (!existing) {

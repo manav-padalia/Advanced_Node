@@ -30,7 +30,7 @@ export interface EnhancedReply extends FastifyReply {
  */
 const buildResponse = <T = any>(
   statusCode: ResponseCodes,
-  payload: Partial<ApiResponse<T>>,
+  payload: Partial<ApiResponse<T>>
 ): ApiResponse<T> => {
   return {
     status: statusCode,
@@ -47,13 +47,13 @@ const buildResponse = <T = any>(
 const responseEnhancerPluginFn: FastifyPluginCallback = (
   fastify: FastifyInstance,
   _opts: any,
-  done: () => void,
+  done: () => void
 ) => {
   fastify.decorateReply('ok', function <
     T = any,
   >(this: FastifyReply, payload: Partial<ApiResponse<T>>) {
     return this.code(ResponseCodes.OK).send(
-      buildResponse(ResponseCodes.OK, payload),
+      buildResponse(ResponseCodes.OK, payload)
     );
   });
 
@@ -61,7 +61,7 @@ const responseEnhancerPluginFn: FastifyPluginCallback = (
     T = any,
   >(this: FastifyReply, payload: Partial<ApiResponse<T>>) {
     return this.code(ResponseCodes.CREATED).send(
-      buildResponse(ResponseCodes.CREATED, payload),
+      buildResponse(ResponseCodes.CREATED, payload)
     );
   });
 
@@ -69,7 +69,7 @@ const responseEnhancerPluginFn: FastifyPluginCallback = (
     T = any,
   >(this: FastifyReply, payload: Partial<ApiResponse<T>>) {
     return this.code(ResponseCodes.ACCEPTED).send(
-      buildResponse(ResponseCodes.ACCEPTED, payload),
+      buildResponse(ResponseCodes.ACCEPTED, payload)
     );
   });
 
@@ -81,72 +81,72 @@ const responseEnhancerPluginFn: FastifyPluginCallback = (
     'badRequest',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.BAD_REQUEST).send(
-        buildResponse(ResponseCodes.BAD_REQUEST, payload),
+        buildResponse(ResponseCodes.BAD_REQUEST, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'unauthorized',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.UNAUTHORIZED).send(
-        buildResponse(ResponseCodes.UNAUTHORIZED, payload),
+        buildResponse(ResponseCodes.UNAUTHORIZED, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'forbidden',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.FORBIDDEN).send(
-        buildResponse(ResponseCodes.FORBIDDEN, payload),
+        buildResponse(ResponseCodes.FORBIDDEN, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'notFound',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.NOT_FOUND).send(
-        buildResponse(ResponseCodes.NOT_FOUND, payload),
+        buildResponse(ResponseCodes.NOT_FOUND, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'conflict',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.CONFLICT).send(
-        buildResponse(ResponseCodes.CONFLICT, payload),
+        buildResponse(ResponseCodes.CONFLICT, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'unprocessableEntity',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.UNPROCESSABLE_ENTITY).send(
-        buildResponse(ResponseCodes.UNPROCESSABLE_ENTITY, payload),
+        buildResponse(ResponseCodes.UNPROCESSABLE_ENTITY, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'tooManyRequests',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.TOO_MANY_REQUESTS).send(
-        buildResponse(ResponseCodes.TOO_MANY_REQUESTS, payload),
+        buildResponse(ResponseCodes.TOO_MANY_REQUESTS, payload)
       );
-    },
+    }
   );
 
   fastify.decorateReply(
     'serverError',
     function (this: FastifyReply, payload: Partial<ApiResponse>) {
       return this.code(ResponseCodes.SERVER_ERROR).send(
-        buildResponse(ResponseCodes.SERVER_ERROR, payload),
+        buildResponse(ResponseCodes.SERVER_ERROR, payload)
       );
-    },
+    }
   );
 
   done();

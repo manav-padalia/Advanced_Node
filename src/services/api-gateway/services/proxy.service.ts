@@ -46,7 +46,7 @@ export class ProxyService {
     path: string,
     method: string,
     data?: any,
-    headers?: Record<string, string>,
+    headers?: Record<string, string>
   ): Promise<any> {
     try {
       const baseUrl = await this.resolveBaseUrl(serviceName, fallbackUrl);
@@ -70,7 +70,7 @@ export class ProxyService {
     } catch (error: any) {
       if (error.response) {
         throw new InternalServerError(
-          error.response.data?.message || 'Service request failed',
+          error.response.data?.message || 'Service request failed'
         );
       }
       throw new InternalServerError('Service unavailable');

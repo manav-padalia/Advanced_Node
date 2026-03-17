@@ -8,7 +8,7 @@ import { logger } from './logger';
 export const initializeSentry = (): void => {
   if (!process.env.SENTRY_DSN) {
     logger.info(
-      'Sentry DSN not configured, external error monitoring disabled',
+      'Sentry DSN not configured, external error monitoring disabled'
     );
     return;
   }
@@ -18,7 +18,7 @@ export const initializeSentry = (): void => {
       dsn: process.env.SENTRY_DSN,
       environment: process.env.NODE_ENV || 'development',
       tracesSampleRate: parseFloat(
-        process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1',
+        process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1'
       ),
     });
 
@@ -33,7 +33,7 @@ export const initializeSentry = (): void => {
  */
 export const captureException = (
   error: any,
-  context: { apiName: string; errorId: string },
+  context: { apiName: string; errorId: string }
 ): void => {
   if (!process.env.SENTRY_DSN) {
     return;
@@ -57,7 +57,7 @@ export const captureException = (
  */
 export const captureMessage = (
   message: string,
-  level: 'fatal' | 'error' | 'warning' | 'info' | 'debug' = 'error',
+  level: 'fatal' | 'error' | 'warning' | 'info' | 'debug' = 'error'
 ): void => {
   if (!process.env.SENTRY_DSN) {
     return;

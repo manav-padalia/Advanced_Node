@@ -14,74 +14,74 @@ const loginSuccess = new Counter('login_success');
 const productsFetched = new Counter('products_fetched');
 
 export const options = {
-    stages: [
-        { duration: '30s', target: 10 },
-        { duration: '1m', target: 30 },
-        { duration: '30s', target: 0 },
-    ],
-    thresholds: {
-        http_req_duration: ['p(95)<1000'],
-        errors: ['rate<0.05'],
-    },
+  stages: [
+    { duration: '30s', target: 10 },
+    { duration: '1m', target: 30 },
+    { duration: '30s', target: 0 },
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<1000'],
+    errors: ['rate<0.05'],
+  },
 };
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 const HEADERS = { 'Content-Type': 'application/json' };
 
 export default function () {
-    let accessToken = '';
+  let accessToken = '';
 
-    group('Auth — Login', () => {
-        const res = http.post(
-            `${BASE_URL}/v1/auth/login`,
-            JSON.stringify({ email: 'user@ecommerce.com', password: 'User@1234' }),
-            { headers: HEADERS },
-        );
+  group('Auth — Login', () => {
+    const res = http.post(
+      `${BASE_URL}/v1/auth/login`,
+      JSON.stringify({ email: 'user@ecommerce.com', password: 'User@1234' }),
+      { headers: HEADERS }
+    );
 
-        const ok = check(res, {
-            'login status 200': (r) => r.status === 200,
-            'has accessToken': (r) => {
-                try {
-                    const body = JSON.parse(r.body);
-                    accessToken = body.data?.accessToken || '';
-                    return !!accessToken;
-                } catch {
-                    return false;
-                }
-            },
-        });
-
-        if (ok) loginSuccess.add(1);
-        errorRate.add(!ok);
+    const ok = check(res, {
+      'login status 200': (r) => r.status === 200,
+      'has accessToken': (r) => {
+        try {
+          const body = JSON.parse(r.body);
+          accessToken = body.data?.accessToken || '';
+          return !!accessToken;
+        } catch {
+          return false;
+        }
+      },
     });
 
-    sleep(0.2);
+    if (ok) loginSuccess.add(1);
+    errorRate.add(!ok);
+  });
 
-    group('Products — List', () => {
-        const res = http.get(`${BASE_URL}/v1/products?page=1&limit=20`);
+  sleep(0.2);
 
-        const ok = check(res, {
-            'products status 200': (r) => r.status === 200,
-            'has data': (r) => {
-                try {
-                    return !!JSON.parse(r.body).data;
-                } catch {
-                    return false;
-                }
-            },
-        });
+  group('Products — List', () => {
+    const res = http.get(`${BASE_URL}/v1/products?page=1&limit=20`);
 
-        if (ok) productsFetched.add(1);
-        errorRate.add(!ok);
+    const ok = check(res, {
+      'products status 200': (r) => r.status === 200,
+      'has data': (r) => {
+        try {
+          return !!JSON.parse(r.body).data;
+        } catch {
+          return false;
+        }
+      },
     });
 
-    sleep(0.2);
+    if (ok) productsFetched.add(1);
+    errorRate.add(!ok);
+  });
 
-    group('Categories — List', () => {
-        const res = http.get(`${BASE_URL}/v1/categories`);
-        const ok = check(res, { 'categories status 200': (r) => r.status === 200 });
-        errorRate.add(!ok);
-    });
+  sleep(0.2);
 
-    sleep(1);
+  group('Categories — List', () => {
+    const res = http.get(`${BASE_URL}/v1/categories`);
+    const ok = check(res, { 'categories status 200': (r) => r.status === 200 });
+    errorRate.add(!ok);
+  });
+
+  sleep(1);
 }

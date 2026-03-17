@@ -25,7 +25,7 @@ export const reportWorker = new Worker(
     };
     return report;
   },
-  { connection, concurrency: 2 },
+  { connection, concurrency: 2 }
 );
 
 reportWorker.on('completed', (job) => {

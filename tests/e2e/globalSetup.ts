@@ -32,7 +32,7 @@ export default async function globalSetup() {
 
     console.log('[globalSetup] Admin user recreated with ADMIN role');
     console.log(
-      '[globalSetup] user@ecommerce.com will be registered via API in tests',
+      '[globalSetup] user@ecommerce.com will be registered via API in tests'
     );
   } finally {
     await prisma.$disconnect();

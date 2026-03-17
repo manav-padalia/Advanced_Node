@@ -13,7 +13,7 @@ export default async function globalTeardown() {
       await prisma.refreshToken.deleteMany({ where: { userId: { in: ids } } });
       await prisma.user.deleteMany({ where: { id: { in: ids } } });
       console.log(
-        `[globalTeardown] Deleted ${dynUsers.length} dynamic e2e user(s)`,
+        `[globalTeardown] Deleted ${dynUsers.length} dynamic e2e user(s)`
       );
     }
   } finally {

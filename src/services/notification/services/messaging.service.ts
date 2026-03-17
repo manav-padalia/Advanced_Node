@@ -46,22 +46,22 @@ export class MessagingService {
     await this.client.bindQueue(
       QUEUES.ORDER_CREATED,
       EXCHANGES.ORDERS,
-      ROUTING_KEYS.ORDER_CREATED,
+      ROUTING_KEYS.ORDER_CREATED
     );
     await this.client.bindQueue(
       QUEUES.ORDER_CANCELLED,
       EXCHANGES.ORDERS,
-      ROUTING_KEYS.ORDER_CANCELLED,
+      ROUTING_KEYS.ORDER_CANCELLED
     );
     await this.client.bindQueue(
       QUEUES.ORDER_CONFIRMED,
       EXCHANGES.ORDERS,
-      ROUTING_KEYS.ORDER_CONFIRMED,
+      ROUTING_KEYS.ORDER_CONFIRMED
     );
     await this.client.bindQueue(
       QUEUES.INVENTORY_LOW_STOCK,
       EXCHANGES.INVENTORY,
-      ROUTING_KEYS.INVENTORY_LOW_STOCK,
+      ROUTING_KEYS.INVENTORY_LOW_STOCK
     );
 
     logger.info('Notification queues and bindings setup complete');
@@ -73,12 +73,12 @@ export class MessagingService {
       QUEUES.ORDER_CREATED,
       async (event: OrderCreatedEvent) => {
         logger.info(
-          `Processing order.created event for order ${event.orderId}`,
+          `Processing order.created event for order ${event.orderId}`
         );
         try {
           await emailService.sendOrderConfirmation(event);
           logger.info(
-            `Order confirmation email sent for order ${event.orderId}`,
+            `Order confirmation email sent for order ${event.orderId}`
           );
         } catch (error) {
           logger.error('Error sending order confirmation email:', error);
@@ -88,7 +88,7 @@ export class MessagingService {
           });
           throw error;
         }
-      },
+      }
     );
 
     // Order cancelled consumer
@@ -96,12 +96,12 @@ export class MessagingService {
       QUEUES.ORDER_CANCELLED,
       async (event: OrderCancelledEvent) => {
         logger.info(
-          `Processing order.cancelled event for order ${event.orderId}`,
+          `Processing order.cancelled event for order ${event.orderId}`
         );
         try {
           await emailService.sendOrderCancellation(event);
           logger.info(
-            `Order cancellation email sent for order ${event.orderId}`,
+            `Order cancellation email sent for order ${event.orderId}`
           );
         } catch (error) {
           logger.error('Error sending order cancellation email:', error);
@@ -111,7 +111,7 @@ export class MessagingService {
           });
           throw error;
         }
-      },
+      }
     );
 
     // Order confirmed consumer
@@ -119,12 +119,12 @@ export class MessagingService {
       QUEUES.ORDER_CONFIRMED,
       async (event: OrderConfirmedEvent) => {
         logger.info(
-          `Processing order.confirmed event for order ${event.orderId}`,
+          `Processing order.confirmed event for order ${event.orderId}`
         );
         try {
           // Additional confirmation logic if needed
           logger.info(
-            `Order confirmed notification processed for order ${event.orderId}`,
+            `Order confirmed notification processed for order ${event.orderId}`
           );
         } catch (error) {
           logger.error('Error processing order confirmed event:', error);
@@ -134,7 +134,7 @@ export class MessagingService {
           });
           throw error;
         }
-      },
+      }
     );
 
     // Low stock alert consumer
@@ -142,7 +142,7 @@ export class MessagingService {
       QUEUES.INVENTORY_LOW_STOCK,
       async (event: InventoryLowStockEvent) => {
         logger.info(
-          `Processing low stock alert for product ${event.productId}`,
+          `Processing low stock alert for product ${event.productId}`
         );
         try {
           await emailService.sendLowStockAlert(event);
@@ -160,7 +160,7 @@ export class MessagingService {
           });
           throw error;
         }
-      },
+      }
     );
 
     logger.info('Notification consumers started');

@@ -10,7 +10,7 @@ export class InventoryService {
         `${INVENTORY_SERVICE_URL}/inventory/reserve`,
         {
           items,
-        },
+        }
       );
       return response.data;
     } catch (error) {

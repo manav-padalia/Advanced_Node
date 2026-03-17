@@ -48,7 +48,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Get product by ID RPC
@@ -67,7 +67,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Create product RPC
@@ -97,7 +97,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message || 'Unknown error' };
         }
-      },
+      }
     );
 
     // Update product RPC
@@ -124,7 +124,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Delete product RPC
@@ -150,7 +150,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Get categories list RPC
@@ -169,7 +169,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Get category by ID RPC
@@ -188,7 +188,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Create category RPC
@@ -207,7 +207,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message || 'Unknown error' };
         }
-      },
+      }
     );
 
     // Update category RPC
@@ -227,7 +227,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     // Delete category RPC
@@ -246,7 +246,7 @@ export class MessagingService {
           });
           return { success: false, error: error.message };
         }
-      },
+      }
     );
 
     logger.info('Product catalog RPC servers ready');
@@ -258,10 +258,10 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.PRODUCTS,
         ROUTING_KEYS.PRODUCT_CREATED,
-        event,
+        event
       );
       logger.info(
-        `Published product.created event for product ${event.productId}`,
+        `Published product.created event for product ${event.productId}`
       );
     } catch (error) {
       logger.error('Failed to publish product.created event:', error);
@@ -277,10 +277,10 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.PRODUCTS,
         ROUTING_KEYS.PRODUCT_UPDATED,
-        event,
+        event
       );
       logger.info(
-        `Published product.updated event for product ${event.productId}`,
+        `Published product.updated event for product ${event.productId}`
       );
     } catch (error) {
       logger.error('Failed to publish product.updated event:', error);
@@ -296,10 +296,10 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.PRODUCTS,
         ROUTING_KEYS.PRODUCT_DELETED,
-        event,
+        event
       );
       logger.info(
-        `Published product.deleted event for product ${event.productId}`,
+        `Published product.deleted event for product ${event.productId}`
       );
     } catch (error) {
       logger.error('Failed to publish product.deleted event:', error);

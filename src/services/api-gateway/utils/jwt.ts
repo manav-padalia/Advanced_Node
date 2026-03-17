@@ -18,7 +18,7 @@ export const generateRefreshToken = (payload: JWTPayload): string => {
   return jwt.sign(
     { ...payload, jti: require('crypto').randomBytes(16).toString('hex') },
     config.JWT_REFRESH_SECRET,
-    { expiresIn: config.JWT_REFRESH_EXPIRY } as SignOptions,
+    { expiresIn: config.JWT_REFRESH_EXPIRY } as SignOptions
   );
 };
 

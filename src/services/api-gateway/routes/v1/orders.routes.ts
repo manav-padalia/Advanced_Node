@@ -15,7 +15,7 @@ const createOrderSchema = z.object({
         productId: z.string().uuid('Invalid product ID'),
         quantity: z.number().int().positive('Quantity must be greater than 0'),
         price: z.number().positive('Price must be greater than 0').optional(),
-      }),
+      })
     )
     .min(1, 'At least one item is required'),
   shippingAddress: z.object({
@@ -66,7 +66,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           ORDER_SERVICE_URL,
           '/orders',
           'GET',
-          { userId: request.user!.userId },
+          { userId: request.user!.userId }
         );
         return reply.send({
           status: 200,
@@ -92,7 +92,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to fetch orders',
         });
       }
-    },
+    }
   );
 
   // GET /v1/orders/:id — get order by ID
@@ -126,7 +126,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           ORDER_SERVICE_URL,
           `/orders/${id}`,
           'GET',
-          { userId: request.user!.userId },
+          { userId: request.user!.userId }
         );
         return reply.send({
           status: 200,
@@ -142,7 +142,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to fetch order',
         });
       }
-    },
+    }
   );
 
   // POST /v1/orders — create order
@@ -201,7 +201,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
             })),
             shippingAddress: validatedData.shippingAddress,
             paymentMethodId: validatedData.paymentMethod,
-          },
+          }
         );
         return reply.status(201).send({
           status: 201,
@@ -227,7 +227,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to create order',
         });
       }
-    },
+    }
   );
 
   // PUT /v1/orders/:id/cancel — cancel order
@@ -261,7 +261,7 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           ORDER_SERVICE_URL,
           `/orders/${id}/cancel`,
           'PUT',
-          { userId: request.user!.userId },
+          { userId: request.user!.userId }
         );
         return reply.status(200).send({
           status: 200,
@@ -277,6 +277,6 @@ export async function ordersRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to cancel order',
         });
       }
-    },
+    }
   );
 }

@@ -30,7 +30,7 @@ export const addErrorHelper = async (inputs: {
         stack: inputs.details?.stack,
         details: inputs.details,
       },
-      'Application error occurred',
+      'Application error occurred'
     );
 
     // Store in database

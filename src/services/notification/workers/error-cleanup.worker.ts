@@ -38,7 +38,7 @@ export const errorCleanupWorker = new Worker(
           deletedCount: result.count,
           cutoffDate: threeMonthsAgo.toISOString(),
         },
-        'Error cleanup completed successfully',
+        'Error cleanup completed successfully'
       );
 
       return {
@@ -49,7 +49,7 @@ export const errorCleanupWorker = new Worker(
     } catch (error: any) {
       logger.error(
         { error: error.message, stack: error.stack },
-        'Error cleanup job failed',
+        'Error cleanup job failed'
       );
       throw error;
     }
@@ -57,7 +57,7 @@ export const errorCleanupWorker = new Worker(
   {
     connection,
     concurrency: 1,
-  },
+  }
 );
 
 errorCleanupWorker.on('completed', (job) => {

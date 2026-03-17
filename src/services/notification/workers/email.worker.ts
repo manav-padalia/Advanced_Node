@@ -39,7 +39,7 @@ export const emailWorker = new Worker(
   {
     connection,
     concurrency: 5,
-  },
+  }
 );
 
 emailWorker.on('completed', (job) => {

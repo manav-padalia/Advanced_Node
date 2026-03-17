@@ -22,7 +22,7 @@ const updateCategorySchema = createCategorySchema.partial();
 // Helper function to validate UUID
 const isValidUUID = (id: string): boolean => {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    id,
+    id
   );
 };
 
@@ -48,7 +48,7 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to fetch categories',
         });
       }
-    },
+    }
   );
 
   // Get category by ID (public)
@@ -94,7 +94,7 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to fetch category',
         });
       }
-    },
+    }
   );
 
   // Create category (admin only)
@@ -147,7 +147,7 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to create category',
         });
       }
-    },
+    }
   );
 
   // Update category (admin only)
@@ -219,7 +219,7 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to update category',
         });
       }
-    },
+    }
   );
 
   // Delete category (admin only)
@@ -267,6 +267,6 @@ export async function categoriesRoutes(fastify: FastifyInstance) {
           error: error.message || 'Failed to delete category',
         });
       }
-    },
+    }
   );
 }

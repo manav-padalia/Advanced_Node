@@ -51,6 +51,6 @@ export async function metricsRoutes(fastify: FastifyInstance) {
     async (_request, reply) => {
       reply.header('Content-Type', register.contentType);
       return reply.send(await register.metrics());
-    },
+    }
   );
 }

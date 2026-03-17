@@ -18,7 +18,7 @@ async function loginAs(request: any, email: string, password: string) {
     data: { email, password },
   });
   expect(res.status(), `Login failed for ${email}: ${await res.text()}`).toBe(
-    200,
+    200
   );
   const body = await res.json();
   return {
@@ -35,7 +35,7 @@ function authHeader(token: string) {
 async function withRetry(
   fn: () => Promise<any>,
   maxRetries = 3,
-  delayMs = 2000,
+  delayMs = 2000
 ): Promise<any> {
   let lastRes: any;
   for (let i = 0; i <= maxRetries; i++) {
@@ -67,7 +67,7 @@ test.describe('Setup', () => {
     const { accessToken, refreshToken, user } = await loginAs(
       request,
       ADMIN_EMAIL,
-      ADMIN_PASSWORD,
+      ADMIN_PASSWORD
     );
     adminToken = accessToken;
     adminRefreshToken = refreshToken;
@@ -186,10 +186,10 @@ test.describe('Categories – admin CRUD', () => {
       request.post('/v1/categories', {
         headers: authHeader(adminToken),
         data: { name, slug, description: 'Created by E2E admin test' },
-      }),
+      })
     );
     expect(res.status(), `Create category failed: ${await res.text()}`).toBe(
-      201,
+      201
     );
     const body = await res.json();
     categoryId = body.data.id;
@@ -312,10 +312,10 @@ test.describe('Products – admin CRUD', () => {
           price: 49.99,
           categoryId,
         },
-      }),
+      })
     );
     expect(res.status(), `Create product failed: ${await res.text()}`).toBe(
-      201,
+      201
     );
     const body = await res.json();
     productId = body.data.id;
@@ -534,7 +534,7 @@ test.describe('Auth – token operations', () => {
     const { accessToken, refreshToken } = await loginAs(
       request,
       ADMIN_EMAIL,
-      ADMIN_PASSWORD,
+      ADMIN_PASSWORD
     );
     adminToken = accessToken;
     adminRefreshToken = refreshToken;

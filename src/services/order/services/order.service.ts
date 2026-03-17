@@ -38,7 +38,7 @@ export class OrderService {
 
     if (!reservations.success) {
       throw new BadRequestError(
-        reservations.message || 'Insufficient stock for some items',
+        reservations.message || 'Insufficient stock for some items'
       );
     }
 
@@ -138,7 +138,7 @@ export class OrderService {
   }
 
   private async calculateTotals(
-    items: Array<{ productId: string; quantity: number }>,
+    items: Array<{ productId: string; quantity: number }>
   ) {
     // Fetch product prices and calculate
     const subtotal = 1000; // Simplified - should fetch actual prices

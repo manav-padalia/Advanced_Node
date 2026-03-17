@@ -36,72 +36,72 @@ describe('ecommerce shared', () => {
     await app.register(responseEnhancerPlugin as any);
     app.get('/ok', async (_req, reply) => (reply as any).ok({ data: {} }));
     app.get('/created', async (_req, reply) =>
-      (reply as any).created({ data: {} }),
+      (reply as any).created({ data: {} })
     );
     app.get('/accepted', async (_req, reply) =>
-      (reply as any).accepted({ data: {} }),
+      (reply as any).accepted({ data: {} })
     );
     app.get('/nocontent', async (_req, reply) => (reply as any).noContent());
     app.get('/bad', async (_req, reply) =>
-      (reply as any).badRequest({ message: 'bad' }),
+      (reply as any).badRequest({ message: 'bad' })
     );
     app.get('/unauth', async (_req, reply) =>
-      (reply as any).unauthorized({ message: 'no' }),
+      (reply as any).unauthorized({ message: 'no' })
     );
     app.get('/forbid', async (_req, reply) =>
-      (reply as any).forbidden({ message: 'no' }),
+      (reply as any).forbidden({ message: 'no' })
     );
     app.get('/nf', async (_req, reply) =>
-      (reply as any).notFound({ message: 'no' }),
+      (reply as any).notFound({ message: 'no' })
     );
     app.get('/conflict', async (_req, reply) =>
-      (reply as any).conflict({ message: 'no' }),
+      (reply as any).conflict({ message: 'no' })
     );
     app.get('/unprocessable', async (_req, reply) =>
-      (reply as any).unprocessableEntity({ message: 'no' }),
+      (reply as any).unprocessableEntity({ message: 'no' })
     );
     app.get('/tmr', async (_req, reply) =>
-      (reply as any).tooManyRequests({ message: 'no' }),
+      (reply as any).tooManyRequests({ message: 'no' })
     );
     app.get('/se', async (_req, reply) =>
-      (reply as any).serverError({ message: 'no' }),
+      (reply as any).serverError({ message: 'no' })
     );
 
     expect((await app.inject({ method: 'GET', url: '/ok' })).statusCode).toBe(
-      200,
+      200
     );
     expect(
-      (await app.inject({ method: 'GET', url: '/created' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/created' })).statusCode
     ).toBe(201);
     expect(
-      (await app.inject({ method: 'GET', url: '/accepted' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/accepted' })).statusCode
     ).toBe(202);
     expect(
-      (await app.inject({ method: 'GET', url: '/nocontent' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/nocontent' })).statusCode
     ).toBe(204);
     expect((await app.inject({ method: 'GET', url: '/bad' })).statusCode).toBe(
-      400,
+      400
     );
     expect(
-      (await app.inject({ method: 'GET', url: '/unauth' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/unauth' })).statusCode
     ).toBe(401);
     expect(
-      (await app.inject({ method: 'GET', url: '/forbid' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/forbid' })).statusCode
     ).toBe(403);
     expect((await app.inject({ method: 'GET', url: '/nf' })).statusCode).toBe(
-      404,
+      404
     );
     expect(
-      (await app.inject({ method: 'GET', url: '/conflict' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/conflict' })).statusCode
     ).toBe(409);
     expect(
-      (await app.inject({ method: 'GET', url: '/unprocessable' })).statusCode,
+      (await app.inject({ method: 'GET', url: '/unprocessable' })).statusCode
     ).toBe(422);
     expect((await app.inject({ method: 'GET', url: '/tmr' })).statusCode).toBe(
-      429,
+      429
     );
     expect((await app.inject({ method: 'GET', url: '/se' })).statusCode).toBe(
-      500,
+      500
     );
     await app.close();
   });

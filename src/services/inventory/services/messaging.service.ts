@@ -51,7 +51,7 @@ export class MessagingService {
           });
           return { success: false, message: error.message };
         }
-      },
+      }
     );
 
     // Release stock RPC
@@ -70,19 +70,19 @@ export class MessagingService {
           });
           return { success: false, message: error.message };
         }
-      },
+      }
     );
 
     // Confirm reservation RPC
     await this.client.setupRPCServer(
       QUEUES.INVENTORY_CONFIRM,
       async (
-        request: ConfirmReservationRequest,
+        request: ConfirmReservationRequest
       ): Promise<ConfirmReservationResponse> => {
         try {
           logger.info('Processing confirm reservation request', request);
           const result = await inventoryService.confirmReservation(
-            request.items,
+            request.items
           );
           return result;
         } catch (error: any) {
@@ -93,7 +93,7 @@ export class MessagingService {
           });
           return { success: false, message: error.message };
         }
-      },
+      }
     );
 
     logger.info('Inventory RPC servers ready');
@@ -105,7 +105,7 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.INVENTORY,
         ROUTING_KEYS.INVENTORY_LOW_STOCK,
-        event,
+        event
       );
       logger.info(`Published low stock alert for product ${event.productId}`);
     } catch (error) {
@@ -122,10 +122,10 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.INVENTORY,
         ROUTING_KEYS.INVENTORY_UPDATED,
-        event,
+        event
       );
       logger.info(
-        `Published inventory updated event for product ${event.productId}`,
+        `Published inventory updated event for product ${event.productId}`
       );
     } catch (error) {
       logger.error('Failed to publish inventory updated event:', error);

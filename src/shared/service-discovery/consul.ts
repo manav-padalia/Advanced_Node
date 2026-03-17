@@ -47,22 +47,22 @@ export async function consulDeregisterService(serviceId: string) {
   if (!CONSUL_HTTP_ADDR) return;
   await axios.put(
     `${CONSUL_HTTP_ADDR}/v1/agent/service/deregister/${encodeURIComponent(
-      serviceId,
+      serviceId
     )}`,
     undefined,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
 }
 
 export async function consulDiscoverService(
-  serviceName: string,
+  serviceName: string
 ): Promise<DiscoveredService[]> {
   if (!CONSUL_HTTP_ADDR) return [];
   const res = await axios.get(
     `${CONSUL_HTTP_ADDR}/v1/health/service/${encodeURIComponent(
-      serviceName,
+      serviceName
     )}?passing=true`,
-    { timeout: 5000 },
+    { timeout: 5000 }
   );
 
   return (res.data as any[]).map((entry) => ({

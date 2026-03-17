@@ -40,7 +40,7 @@ export const alertWorker = new Worker(
   {
     connection,
     concurrency: 3,
-  },
+  }
 );
 
 alertWorker.on('completed', (job) => {

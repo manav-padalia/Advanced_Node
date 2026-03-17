@@ -65,11 +65,11 @@ export async function authRoutes(fastify: FastifyInstance) {
     });
 
     console.log(
-      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`,
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
     );
 
     return reply.redirect(
-      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`,
+      `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
     );
   });
 
@@ -107,7 +107,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         timeout: 8000,
-      },
+      }
     );
 
     const accessTokenFromGoogle = tokenRes.data.access_token as
@@ -122,7 +122,7 @@ export async function authRoutes(fastify: FastifyInstance) {
       {
         headers: { Authorization: `Bearer ${accessTokenFromGoogle}` },
         timeout: 8000,
-      },
+      }
     );
 
     const googleSub = userInfoRes.data.sub as string | undefined;
@@ -325,7 +325,7 @@ export async function authRoutes(fastify: FastifyInstance) {
           error: err.message || 'Registration failed',
         });
       }
-    },
+    }
   );
 
   // Login
@@ -389,7 +389,7 @@ export async function authRoutes(fastify: FastifyInstance) {
 
         const isValidPassword = await verifyPassword(
           user.passwordHash,
-          body.password,
+          body.password
         );
 
         if (!isValidPassword) {
@@ -456,7 +456,7 @@ export async function authRoutes(fastify: FastifyInstance) {
           error: err.message || 'Login failed',
         });
       }
-    },
+    }
   );
 
   // Refresh Token
@@ -552,6 +552,6 @@ export async function authRoutes(fastify: FastifyInstance) {
           error: err.message || 'Token refresh failed',
         });
       }
-    },
+    }
   );
 }

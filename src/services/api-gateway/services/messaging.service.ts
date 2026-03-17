@@ -22,14 +22,14 @@ export class MessagingService {
     queue: string,
     payload: any,
     options: { timeout: number },
-    retries = 1,
+    retries = 1
   ): Promise<any> {
     try {
       return await this.client.rpcCall(queue, payload, options);
     } catch (error: any) {
       if (retries > 0) {
         logger.warn(
-          `RPC call to ${queue} failed (${error.message}), retrying in 1s...`,
+          `RPC call to ${queue} failed (${error.message}), retrying in 1s...`
         );
         await new Promise((resolve) => setTimeout(resolve, 1000));
         return this.rpcWithRetry(queue, payload, options, retries - 1);
@@ -59,7 +59,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         QUEUES.PRODUCT_GET,
         { productId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to get product');
@@ -93,7 +93,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'product.update.rpc',
         { productId, ...data },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to update product');
@@ -110,7 +110,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'product.delete.rpc',
         { productId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       return response;
     } catch (error: any) {
@@ -125,7 +125,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'category.list.rpc',
         {},
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to get categories');
@@ -142,7 +142,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'category.get.rpc',
         { categoryId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to get category');
@@ -176,7 +176,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'category.update.rpc',
         { categoryId, ...data },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to update category');
@@ -193,7 +193,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'category.delete.rpc',
         { categoryId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to delete category');
@@ -211,7 +211,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'order.list.rpc',
         { userId, ...query },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to get orders');
@@ -228,7 +228,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'order.get.rpc',
         { orderId, userId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to get order');
@@ -260,7 +260,7 @@ export class MessagingService {
       const response = await this.rpcWithRetry(
         'order.cancel.rpc',
         { orderId, userId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       if (!response.success) {
         throw new Error(response.error || 'Failed to cancel order');
@@ -278,7 +278,7 @@ export class MessagingService {
       const response = await this.client.rpcCall(
         'inventory.get.rpc',
         { productId },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       return response;
     } catch (error: any) {
@@ -292,7 +292,7 @@ export class MessagingService {
       const response = await this.client.rpcCall(
         'inventory.update.rpc',
         { productId, ...data },
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       return response;
     } catch (error: any) {

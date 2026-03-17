@@ -31,14 +31,14 @@ export class MessagingService {
 
   // RPC calls to Inventory Service
   async reserveStock(
-    items: Array<{ productId: string; quantity: number }>,
+    items: Array<{ productId: string; quantity: number }>
   ): Promise<ReserveStockResponse> {
     try {
       const request: ReserveStockRequest = { items };
       const response = await this.client.rpcCall<ReserveStockResponse>(
         QUEUES.INVENTORY_RESERVE,
         request,
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       return response;
     } catch (error: any) {
@@ -48,14 +48,14 @@ export class MessagingService {
   }
 
   async releaseStock(
-    items: Array<{ productId: string; quantity: number }>,
+    items: Array<{ productId: string; quantity: number }>
   ): Promise<ReleaseStockResponse> {
     try {
       const request: ReleaseStockRequest = { items };
       const response = await this.client.rpcCall<ReleaseStockResponse>(
         QUEUES.INVENTORY_RELEASE,
         request,
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       return response;
     } catch (error: any) {
@@ -65,14 +65,14 @@ export class MessagingService {
   }
 
   async confirmReservation(
-    items: Array<{ productId: string; quantity: number }>,
+    items: Array<{ productId: string; quantity: number }>
   ): Promise<ConfirmReservationResponse> {
     try {
       const request: ConfirmReservationRequest = { items };
       const response = await this.client.rpcCall<ConfirmReservationResponse>(
         QUEUES.INVENTORY_CONFIRM,
         request,
-        { timeout: 10000 },
+        { timeout: 10000 }
       );
       return response;
     } catch (error: any) {
@@ -87,7 +87,7 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.ORDERS,
         ROUTING_KEYS.ORDER_CREATED,
-        event,
+        event
       );
       logger.info(`Published order.created event for order ${event.orderId}`);
     } catch (error) {
@@ -100,7 +100,7 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.ORDERS,
         ROUTING_KEYS.ORDER_CANCELLED,
-        event,
+        event
       );
       logger.info(`Published order.cancelled event for order ${event.orderId}`);
     } catch (error) {
@@ -113,7 +113,7 @@ export class MessagingService {
       await this.client.publish(
         EXCHANGES.ORDERS,
         ROUTING_KEYS.ORDER_CONFIRMED,
-        event,
+        event
       );
       logger.info(`Published order.confirmed event for order ${event.orderId}`);
     } catch (error) {

@@ -115,7 +115,7 @@ export class CacheService {
           hitRate: `${this.metrics.hitRate.toFixed(2)}%`,
           total,
         },
-        'Cache metrics',
+        'Cache metrics'
       );
     }
   }

@@ -26,7 +26,7 @@ export class RabbitMQClient {
   >();
 
   constructor(
-    private url: string = process.env.RABBITMQ_URL || 'amqp://localhost:5672',
+    private url: string = process.env.RABBITMQ_URL || 'amqp://localhost:5672'
   ) {}
 
   async connect(): Promise<void> {
@@ -52,7 +52,7 @@ export class RabbitMQClient {
             this.handleRPCResponse(msg);
           }
         },
-        { noAck: true },
+        { noAck: true }
       );
 
       logger.info('Connected to RabbitMQ');
@@ -100,7 +100,7 @@ export class RabbitMQClient {
   async assertExchange(
     exchange: string,
     type: string,
-    options: any = {},
+    options: any = {}
   ): Promise<void> {
     if (!this.channel) {
       throw new Error('Channel not initialized');
@@ -114,7 +114,7 @@ export class RabbitMQClient {
   async bindQueue(
     queue: string,
     exchange: string,
-    routingKey: string,
+    routingKey: string
   ): Promise<void> {
     if (!this.channel) {
       throw new Error('Channel not initialized');
@@ -126,7 +126,7 @@ export class RabbitMQClient {
     exchange: string,
     routingKey: string,
     message: any,
-    options: MessageOptions = {},
+    options: MessageOptions = {}
   ): Promise<void> {
     if (!this.channel) {
       throw new Error('Channel not initialized');
@@ -144,7 +144,7 @@ export class RabbitMQClient {
   async sendToQueue(
     queue: string,
     message: any,
-    options: MessageOptions = {},
+    options: MessageOptions = {}
   ): Promise<void> {
     if (!this.channel) {
       throw new Error('Channel not initialized');
@@ -162,7 +162,7 @@ export class RabbitMQClient {
   async consume(
     queue: string,
     handler: (message: any, msg: ConsumeMessage) => Promise<void>,
-    options: any = {},
+    options: any = {}
   ): Promise<void> {
     if (!this.channel) {
       throw new Error('Channel not initialized');
@@ -182,14 +182,14 @@ export class RabbitMQClient {
           }
         }
       },
-      options,
+      options
     );
   }
 
   async rpcCall<T = any>(
     queue: string,
     message: any,
-    options: RPCOptions = {},
+    options: RPCOptions = {}
   ): Promise<T> {
     if (!this.channel || !this.replyQueue) {
       throw new Error('Channel or reply queue not initialized');
@@ -220,7 +220,7 @@ export class RabbitMQClient {
 
   async setupRPCServer(
     queue: string,
-    handler: (message: any) => Promise<any>,
+    handler: (message: any) => Promise<any>
   ): Promise<void> {
     if (!this.channel) {
       throw new Error('Channel not initialized');
@@ -240,7 +240,7 @@ export class RabbitMQClient {
               Buffer.from(JSON.stringify(response)),
               {
                 correlationId: msg.properties.correlationId,
-              },
+              }
             );
           }
 
@@ -254,7 +254,7 @@ export class RabbitMQClient {
               Buffer.from(JSON.stringify({ error: error.message })),
               {
                 correlationId: msg.properties.correlationId,
-              },
+              }
             );
           }
 

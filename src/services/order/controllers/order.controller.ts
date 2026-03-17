@@ -15,7 +15,7 @@ const createOrderSchema = z.object({
     z.object({
       productId: z.string().uuid(),
       quantity: z.number().int().positive(),
-    }),
+    })
   ),
   shippingAddress: z.object({
     street: z.string(),
