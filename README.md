@@ -55,8 +55,6 @@ The application uses **RabbitMQ** for inter-service communication:
 - **RPC Pattern**: Synchronous-like request-reply (e.g., API Gateway → Product Service)
 - **Event Pattern**: Asynchronous publish-subscribe (e.g., Order Created → Email Notification)
 
-See [RABBITMQ_MIGRATION.md](./RABBITMQ_MIGRATION.md) for detailed architecture and migration guide.
-
 ### Key Benefits
 
 - ✅ Decoupled services
@@ -267,7 +265,6 @@ See `.env.example` for all required variables.
 ## 📖 Documentation
 
 - **[Quick Start Guide](./QUICK_START.md)** - Step-by-step setup with troubleshooting
-- **[RabbitMQ Migration Guide](./RABBITMQ_MIGRATION.md)** - Complete guide to RabbitMQ implementation
 - **[RabbitMQ Architecture](./docs/rabbitmq-architecture.md)** - Detailed architecture diagrams and patterns
 - **[System Architecture](./docs/architecture.md)** - Microservices layout, ERD, and tech stack
 - **[Deployment Guide](./docs/deployment.md)** - Local, Docker, Railway, Render, CI/CD

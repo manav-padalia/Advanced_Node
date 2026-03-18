@@ -10,24 +10,24 @@
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        API GATEWAY  :3000                           │
-│  • JWT Authentication      • Rate Limiting (100 req/15min)          │
-│  • RBAC Middleware          • Swagger UI (/docs)                     │
+│  • JWT Authentication       • Rate Limiting (100 req/15min)         │
+│  • RBAC Middleware          • Swagger UI (/docs)                    │
 │  • CORS / Helmet            • Request Validation (Zod)              │
 │  • Response Compression     • Error Handling + Sentry               │
-└──────┬──────────────┬───────────────┬──────────────────────────────┘
+└──────┬──────────────┬───────────────┬───────────────────────────────┘
        │ RabbitMQ RPC │               │ HTTP Proxy
        ▼              ▼               ▼
 ┌──────────────┐ ┌──────────────┐ ┌──────────────────┐
 │   PRODUCT    │ │  INVENTORY   │ │   ORDER SERVICE  │
-│   CATALOG    │ │   SERVICE    │ │      :3002        │
+│   CATALOG    │ │   SERVICE    │ │      :3002       │
 │    :3001     │ │    :3003     │ │                  │
 │              │ │              │ │  • Order CRUD    │
 │ • Products   │ │ • Stock Mgmt │ │  • Stripe Pay    │
-│ • Categories │ │ • Reservations│ │  • Status Flow  │
+│ • Categories │ │ • Reservations││  • Status Flow   │
 │ • Redis Cache│ │ • Low Stock  │ │                  │
 └──────┬───────┘ └──────┬───────┘ └────────┬─────────┘
-       │                │                   │
-       └────────────────┴───────────────────┘
+       │                │                  │
+       └────────────────┴──────────────────┘
                         │ RabbitMQ Events
                         ▼
               ┌─────────────────────┐
@@ -45,15 +45,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                     INFRASTRUCTURE                        │
+│                     INFRASTRUCTURE                       │
 │                                                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐  │
-│  │ PostgreSQL  │  │    Redis    │  │    RabbitMQ     │  │
-│  │   :5432     │  │    :6379    │  │  :5672 / :15672 │  │
-│  │             │  │             │  │                 │  │
-│  │ Primary DB  │  │ Cache +     │  │ Message Broker  │  │
-│  │ Prisma ORM  │  │ BullMQ Jobs │  │ RPC + Events    │  │
-│  └─────────────┘  └─────────────┘  └─────────────────┘  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐   │
+│  │ PostgreSQL  │  │    Redis    │  │    RabbitMQ     │   │
+│  │   :5432     │  │    :6379    │  │  :5672 / :15672 │   │
+│  │             │  │             │  │                 │   │
+│  │ Primary DB  │  │ Cache +     │  │ Message Broker  │   │
+│  │ Prisma ORM  │  │ BullMQ Jobs │  │ RPC + Events    │   │
+│  └─────────────┘  └─────────────┘  └─────────────────┘   │
 │                                                          │
 │  ┌─────────────┐                                         │
 │  │   Consul    │                                         │

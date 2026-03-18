@@ -11,10 +11,10 @@ All inter-service communication uses RabbitMQ with two patterns:
 
 ```
 EXCHANGES
-├── orders.exchange       (topic)
-├── inventory.exchange    (topic)
+├── orders.exchange        (topic)
+├── inventory.exchange     (topic)
 ├── notifications.exchange (topic)
-└── products.exchange     (topic)
+└── products.exchange      (topic)
 
 RPC QUEUES (request-reply)
 ├── product.get.rpc
