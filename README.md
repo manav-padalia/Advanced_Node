@@ -265,10 +265,14 @@ See `.env.example` for all required variables.
 ## 📖 Documentation
 
 - **[Quick Start Guide](./QUICK_START.md)** - Step-by-step setup with troubleshooting
-- **[RabbitMQ Architecture](./docs/rabbitmq-architecture.md)** - Detailed architecture diagrams and patterns
-- **[System Architecture](./docs/architecture.md)** - Microservices layout, ERD, and tech stack
-- **[Deployment Guide](./docs/deployment.md)** - Local, Docker, Railway, Render, CI/CD
-- **[Load Testing](./tests/load/README.md)** - K6 load test scripts and instructions
+- **[API Documentation](./docs/api-doc.md)** - Full API reference: auth, products, categories, orders, error codes, and internal service endpoints
+- **[System Architecture](./docs/architecture.md)** - Microservices layout, RabbitMQ queue maps, ERD, request pipeline, and tech stack
+- **[Deployment Guide](./docs/deployment.md)** - Local dev, Docker, Railway, Render, CI/CD pipeline, and production checklist
+- **[Monitoring](./docs/monitoring.md)** - Pino logging, Prometheus metrics, Sentry, Bull Board, Socket.IO alerts, and health checks
+- **[Performance & Security](./docs/performance-security.md)** - RPS/latency benchmarks, k6 and Apache Bench load tests, security hardening, and optimization techniques
+- **[RabbitMQ Architecture](./docs/rabbitmq-architecture.md)** - RPC and event patterns, exchange/queue map, payload examples, and connection management
+- **[Source Code Guide](./docs/source-code.md)** - Monorepo structure, TypeScript/Fastify/Prisma patterns, all environment variables, and Docker setup
+- **[Test Report](./docs/test-report.md)** - Unit (Jest), E2E (Playwright), and load test (k6) results with coverage summary
 
 ## 🚀 Production Deployment
 
